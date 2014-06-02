@@ -13,8 +13,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 
@@ -42,20 +40,13 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import model.End;
-import model.JoinGateway;
-import model.Panneau;
-import model.SplitGateway;
-import model.Start;
-import model.Task;
 import model.WorkFlow;
 import agents.ViewAgent;
 
-public class View extends JFrame
-{
+public class View extends JFrame {
 	private ViewAgent viewagent;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-	
+
 	private final JFileChooser choose = new JFileChooser();
 	private final JMenuBar bar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("Fichier");
@@ -67,17 +58,18 @@ public class View extends JFrame
 	private final StyledDocument document = new DefaultStyledDocument(context);
 	private final JTextPane historic = new JTextPane(document);
 	private final JScrollPane conversationContent = new JScrollPane(historic);
-	private final JPanel graph = new JPanel();
+	private final GraphContainer graphContent = new GraphContainer();
 	private final JPanel pane = new JPanel(new GridBagLayout());
 	private final JPanel conversation = new JPanel(new GridBagLayout());
-	private final JButton micro = new JButton(new ImageIcon((((new ImageIcon("doc/micro.png")).getImage()).getScaledInstance(45,45, java.awt.Image.SCALE_SMOOTH))));
+	private final JButton micro = new JButton(new ImageIcon((((new ImageIcon(
+			"doc/micro.png")).getImage()).getScaledInstance(45, 45,
+			java.awt.Image.SCALE_SMOOTH))));
 	private final JTextArea text = new JTextArea(3, 2);
 	private final JScrollPane actions = new JScrollPane(text);
 	boolean isMicroOn = false;
 
-	public View(ViewAgent a) 
-	{
-		viewagent=a;
+	public View(ViewAgent a) {
+		viewagent = a;
 		this.setVisible(true);
 		this.setSize(1200, 650);
 		this.setResizable(false);
@@ -86,15 +78,18 @@ public class View extends JFrame
 
 		Style style = context.getStyle(StyleContext.DEFAULT_STYLE);
 		final Style center = document.addStyle("center", style);
-		center.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_CENTER);
+		center.addAttribute(StyleConstants.Alignment,
+				StyleConstants.ALIGN_CENTER);
 		center.addAttribute(StyleConstants.Foreground, Color.black);
 		final Style right = document.addStyle("right", style);
 		right.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_RIGHT);
-		right.addAttribute(StyleConstants.Foreground, new Color(0x2F, 0x8F, 0x00));
+		right.addAttribute(StyleConstants.Foreground, new Color(0x2F, 0x8F,
+				0x00));
 
 		final Style left = document.addStyle("right", style);
 		left.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_LEFT);
-		left.addAttribute(StyleConstants.Foreground, new Color(0x08, 0x10, 0x73));
+		left.addAttribute(StyleConstants.Foreground,
+				new Color(0x08, 0x10, 0x73));
 
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 		TitledBorder title;
@@ -176,8 +171,8 @@ public class View extends JFrame
 		constraints.insets = new Insets(20, 0, 0, 0);
 		title = BorderFactory.createTitledBorder(blackline, "BPMN Graphic");
 		title.setTitleJustification(TitledBorder.CENTER);
-		graph.setBorder(title);
-		pane.add(graph, constraints);
+		graphContent.setBorder(title);
+		pane.add(graphContent, constraints);
 
 		this.add(pane);
 
@@ -258,13 +253,13 @@ public class View extends JFrame
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					
+
 					String actionsText = text.getText();
-					actionsText=actionsText.replace("\n","");
-					GuiEvent ev = new GuiEvent(this,ViewAgent.TEXT_SEND);
+					actionsText = actionsText.replace("\n", "");
+					GuiEvent ev = new GuiEvent(this, ViewAgent.TEXT_SEND);
 					ev.addParameter(actionsText);
 					viewagent.postGuiEvent(ev);
-					
+
 					text.setText("");
 					/* historic.getSize().height */
 					final int pos = document.getLength();
@@ -311,10 +306,15 @@ public class View extends JFrame
 			}
 
 		});
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
+	}
+
+	public void refresh(WorkFlow graph) {
+		graphContent.refresh(graph);
+		repaint();
 	}
 
 	public PropertyChangeSupport getPcs() {
