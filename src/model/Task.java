@@ -7,7 +7,7 @@ import java.awt.Graphics;
 
 
 public class Task extends ObjectBPMN{
-	String label="";
+	
 	public Task(String lbl){
 		super();
 		max_link_partant=1;

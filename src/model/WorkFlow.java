@@ -36,7 +36,6 @@ public class WorkFlow {
 	{
 		Pool p=new Pool(s,0,0, l);
 		addPool(p);
-		System.out.println(l);
 	}
 	
 	// Permet d'ajouter un objet dans une pool /!\ il faut obligatoirement passer par cette mï¿½thode
@@ -44,6 +43,14 @@ public class WorkFlow {
 	{
 		o.setId(iter.get_id());
 		Pools.get(pool).AddObject(o);
+		nb_obj++;
+	}
+	
+	// ajoute dans la pool 0 par défaut
+	public void addObject(ObjectBPMN o)
+	{
+		o.setId(iter.get_id());
+		Pools.get(0).AddObject(o);
 		nb_obj++;
 	}
 	
@@ -61,6 +68,20 @@ public class WorkFlow {
 		return null;
 	}
 	
+	//retourne un objet dont le label est passï¿½ en paramï¿½tres
+		public ObjectBPMN get_objet(String lbl)
+		{
+			for(int i=0;i<Pools.size();i++)
+			{
+				Pool p=Pools.get(i);
+				for(int j=0;j<p.getObjects().size();j++)
+				{
+					if(p.getObjects().get(j).getLabel()==lbl) return p.getObjects().get(j);
+				}
+			}
+			return null;
+		}
+	
 	
 	//retourne un objet dont la position et la ligne sont passï¿½s en parametre
 	public ObjectBPMN get_objet(int ligne,int col)
@@ -77,19 +98,24 @@ public class WorkFlow {
 		return null;
 	}
 	
+	
+	
 	//retourne une selon l'objet dont l'id est passï¿½ en paramï¿½tres
-		public int get_pool_objet(int id)
-		{
-			for(int i=0;i<Pools.size();i++)
+			public int get_pool_objet(int id)
 			{
-				Pool p=Pools.get(i);
-				for(int j=0;j<p.getObjects().size();j++)
+				for(int i=0;i<Pools.size();i++)
 				{
-					if(p.getObjects().get(j).getId()==id) return i;
+					Pool p=Pools.get(i);
+					for(int j=0;j<p.getObjects().size();j++)
+					{
+						if(p.getObjects().get(j).getId()==id) return i;
+					}
 				}
+				return 0;
 			}
-			return 0;
-		}
+			
+			
+		
 	
 	
 		//retourne une pool selon son numero
@@ -97,6 +123,8 @@ public class WorkFlow {
 		{
 			return Pools.get(id);
 		}
+		
+		
 		
 		//retourne une pool selon son label
 		public Pool get_pool(String lbl)
@@ -196,7 +224,7 @@ public class WorkFlow {
 		place(Matrice);
 		
 		
-		System.out.println(Matrice);
+		//System.out.println(Matrice);
 		
 	}
 	

@@ -6,12 +6,15 @@ import java.awt.Paint;
 import java.util.ArrayList;
 
 
-abstract class ObjectBPMN {
+public abstract class ObjectBPMN {
 protected int id;
 protected int x,y; // position
 protected int l,h; // largeur/hauteur
 protected int ligne,colone; // utilis� pour le placement
 protected int prio=-1;
+protected String label="";
+
+
 protected ArrayList<ObjectBPMN> links_partant=new ArrayList<ObjectBPMN>(); // liens partant
 protected ArrayList<ObjectBPMN> links_arrivant=new ArrayList<ObjectBPMN>(); // liens arrivant
 int max_link_partant,max_link_arrivant; // nombre de liens max d�finis pour chaque type d'objet h�rit�
@@ -248,7 +251,13 @@ public void setPrio(int prio) {
 	this.prio = prio;
 }
 
+public String getLabel() {
+	return label;
+}
 
+public void setLabel(String label) {
+	this.label = label;
+}
 
 
 }

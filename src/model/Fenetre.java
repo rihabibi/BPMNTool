@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
- 
+ /*
 public class Fenetre extends JFrame {
   public Fenetre(){                
     this.setTitle("BPMNToolGraph");
@@ -87,3 +87,5 @@ public class Fenetre extends JFrame {
     this.setVisible(true);
   }     
 }
+
+*/
