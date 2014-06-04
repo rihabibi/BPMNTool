@@ -19,7 +19,7 @@ public class SentenceModel {
 	public SentenceModel() {
 		action = "";
 		object = "";
-		//args =;
+		// args =;
 	}
 
 	public String getAction() {
@@ -65,6 +65,7 @@ public class SentenceModel {
 	}
 
 	// Utile pour contrôler
+	@Override
 	public String toString() {
 		return action + " " + object + " " + args + " " + objectClassName;
 	}

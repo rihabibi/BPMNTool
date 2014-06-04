@@ -119,16 +119,18 @@ public class Interpretor {
 		currentSentenceModel = new SentenceModel();
 		ArrayList<String> words = new ArrayList<String>();
 		// Ne garde que les tokens non vides
-		for (int i = 0; i < pieces.length; i++)
-			if (pieces[i].length() > 0)
+		for (int i = 0; i < pieces.length; i++) {
+			if (pieces[i].length() > 0) {
 				words.add(pieces[i]);
+			}
+		}
 
 		boolean found = false;
 		int i = 0;
 		/**
 		 * On recherche l'activité
 		 */
-		while (!found && i < words.size()) {
+		while (!found && (i < words.size())) {
 			found = isAction(words.get(i));
 			i++;
 		}
@@ -141,8 +143,8 @@ public class Interpretor {
 			lookForObject(words, i);
 		} else {
 			/**
-			 * L'activité n'est pas trouvée on cherche les éléments objets à
-			 * partir du début jusqu'au séparateur
+			 * L'activité n'est pas trouvée on cherche les éléments objets
+			 * à partir du début jusqu'au séparateur
 			 */
 			lookForObject(words, 0);
 		}
@@ -156,16 +158,17 @@ public class Interpretor {
 		 */
 		boolean found = false;
 		int i = from;
-		while (!found && i < words.size()) {
-			if (isObject(words.get(i)))
+		while (!found && (i < words.size())) {
+			if (isObject(words.get(i))) {
 				currentSentenceModel.addObjectElement(words.get(i));
+			}
 			found = isSeparator(words.get(i));
 			i++;
 		}
 		// Recherche les arguments
 		lookForArgs(words, i);
 		// Vérifie si l'objet est correct et recherche sa classe dans la kb
-		//verifyObject(currentSentenceModel.getObject());
+		// verifyObject(currentSentenceModel.getObject());
 	}
 
 	/**
@@ -179,7 +182,8 @@ public class Interpretor {
 	private void lookForArgs(ArrayList<String> words, int from) {
 		int i = from;
 		while (i < words.size()) {
-			if (!isSeparator(words.get(i)) && !words.get(i).equals("to") && !words.get(i).equals("and")){
+			if (!isSeparator(words.get(i)) && !words.get(i).equals("to")
+					&& !words.get(i).equals("and")) {
 				currentSentenceModel.addArgsElement(words.get(i));
 			}
 			i++;
@@ -187,19 +191,23 @@ public class Interpretor {
 	}
 
 	private void verifyObject(String s) {
-		if (isObject(s))
+		if (isObject(s)) {
 			lookForObjectClass(s);
-	}
-/**
- * Recherche dans la base la chaîne correspondant à la classe java de l'objet
- * ne la trouve dans le cas où les mots sont corrects mais pas leur ensemble (horizontal event)
- */
-	private void lookForObjectClass(String s) {
-		String queryResult = runquery(createObjectClassQuery(s));
-		currentSentenceModel.setObjectClassName(analyseQueryResult(queryResult));
+		}
 	}
 
-	// Exécute une requête SELECT  à partir d'une chaîne
+	/**
+	 * Recherche dans la base la chaîne correspondant à la classe java de
+	 * l'objet ne la trouve dans le cas où les mots sont corrects mais pas leur
+	 * ensemble (horizontal event)
+	 */
+	private void lookForObjectClass(String s) {
+		String queryResult = runquery(createObjectClassQuery(s));
+		currentSentenceModel
+				.setObjectClassName(analyseQueryResult(queryResult));
+	}
+
+	// Exécute une requête SELECT à partir d'une chaîne
 	private String runquery(String query) {
 		QueryExecution queryExecution = QueryExecutionFactory.create(query,
 				model);
@@ -209,10 +217,12 @@ public class Interpretor {
 		queryExecution.close();
 		return baos.toString();
 	}
-	/** Analyse le résultat d'une requête
-	 * La première ligne contient le nom des paramètres de la query
-	 * Les lignes suivantes les valueurs.
-	 * Ici il n'y a qu'un paramètre
+
+	/**
+	 * Analyse le résultat d'une requête La première ligne contient le nom
+	 * des paramètres de la query Les lignes suivantes les valueurs. Ici il n'y
+	 * a qu'un paramètre
+	 * 
 	 * @param queryResult
 	 * @return
 	 */
@@ -220,16 +230,19 @@ public class Interpretor {
 		Scanner sc = new Scanner(queryResult);
 		sc.nextLine();
 		String v = "";
-		if (sc.hasNextLine())
+		if (sc.hasNextLine()) {
 			v = sc.nextLine();
+		}
 		sc.close();
 		return v;
 	}
-/**
- * Crée la requête SPARQL de recherche de la classe JAVA d'un objet
- * @param objectName
- * @return
- */
+
+	/**
+	 * Crée la requête SPARQL de recherche de la classe JAVA d'un objet
+	 * 
+	 * @param objectName
+	 * @return
+	 */
 	private String createObjectClassQuery(String objectName) {
 		StringBuilder sb = new StringBuilder();
 		String nsbpmn = model.getNsPrefixURI(BPMN_PREFIX);
