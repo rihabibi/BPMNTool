@@ -5,13 +5,14 @@ import java.awt.Graphics;
 
 
 public class End extends ObjectBPMN{
-
-	public End(){
+	
+	public End(String lbl){
 		super();
 		max_link_partant=0;
 		max_link_arrivant=1;
 		h=40;
 		l=40;
+		label=lbl;
 	}
 	
 	public void affiche(Graphics g)
@@ -27,6 +28,7 @@ public class End extends ObjectBPMN{
 		
 		String s="End";
 		g.drawString(s, x+5,y+h+12); // positionne le texte centr�
+		g.drawString(label, x+(l/2)-(5*label.length()/2)+15,y+h+12); // positionne le label centr�
 		super.affiche(g);
 	}
 }
