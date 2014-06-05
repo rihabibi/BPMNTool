@@ -6,9 +6,11 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
- /*
-public class Fenetre extends JFrame {
-  public Fenetre(){                
+ public class Fenetre extends JFrame {
+	 
+ 
+  public Fenetre()
+  {                
     this.setTitle("BPMNToolGraph");
     this.setSize(800,600);
     this.setLocationRelativeTo(null);               
@@ -80,12 +82,12 @@ public class Fenetre extends JFrame {
 	System.out.println("taille ::"+wf.get_objet(7).getLinks_partant().size());
     Panneau pan=new Panneau(wf);
     this.setContentPane(pan);
-
-    wf.optimise();
+    
+    //wf.optimise();
  
    // System.out.println(stt2.getColone());
     this.setVisible(true);
-  }     
+      
 }
 
-*/
+}

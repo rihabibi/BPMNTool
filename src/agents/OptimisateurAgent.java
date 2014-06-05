@@ -7,6 +7,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import model.WorkFlow;
 
@@ -30,23 +31,24 @@ public class OptimisateurAgent extends Agent {
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				// récupération du workflow non opti
+				
 				try {
-					WorkFlow wf = mapper.readValue(message.getContent(),
-							WorkFlow.class);
+					System.out.println("reception opti");
+					WorkFlow wf = mapper.readValue(message.getContent(),WorkFlow.class);
 					wf.optimise();
 
 					// envois du résultat vers un agent d'affichage
 					ObjectMapper mapper2 = new ObjectMapper();
 					try {
 						ACLMessage message_reply = new ACLMessage(
-								ACLMessage.INFORM);
+								ACLMessage.REQUEST);
 
 						String s = mapper2.writeValueAsString(wf);
 						message_reply.setContent(s);
 						message_reply.addReceiver(new AID("Vue",
 								AID.ISLOCALNAME));
 						myAgent.send(message_reply);
-
+						System.out.println("send to view");
 					} catch (JsonProcessingException e) {
 						e.printStackTrace();
 					}
@@ -60,5 +62,28 @@ public class OptimisateurAgent extends Agent {
 
 		}
 
+	}
+	
+	
+	public HashMap<String, WorkFlow> toMap(String json) {
+		HashMap<String, WorkFlow> map = new HashMap<String, WorkFlow>();
+		ObjectMapper mapper = new ObjectMapper();
+		try { // Convert JSON string to Map
+			map = mapper.readValue(json, HashMap.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
+
+	public String toJSON(WorkFlow act) {
+		String json = new String();
+		ObjectMapper m = new ObjectMapper();
+		try {
+			json = m.writeValueAsString(act);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return json;
 	}
 }

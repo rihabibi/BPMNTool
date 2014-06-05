@@ -1,15 +1,11 @@
 package agents;
 
-import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.lang.acl.ACLMessage;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import model.Action;
 import model.End;
 import model.JoinGateway;
-import model.Pool;
 import model.SplitGateway;
 import model.Start;
 import model.Task;
@@ -17,60 +13,61 @@ import model.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jade.core.AID;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+
 public class GenerateBehaviour extends CyclicBehaviour {
 
 	public GenerateBehaviour(GenerateurAgent a) {
 		super(a);
 	}
 
-	@Override
 	public void action() {
-		ACLMessage message = myAgent.receive(/*
-											 * MessageTemplate.MatchPerformative(
-											 * ACLMessage.REQUEST)
-											 */);
+		ACLMessage message = myAgent.receive(/*MessageTemplate.MatchPerformative(ACLMessage.REQUEST)*/);
 		if (message != null) {
 			// Deserialisation du message
 			String Json = message.getContent();
-			HashMap<String, String> map = toMap(Json);
+			HashMap<String, Object> map = toMap(Json);
 
 			// extraction des valeurs
-			String request = map.get("action");
-			String object = map.get("object");
-			String objectClassName = map.get("objectClassName");
-			String args = map.get("args");
+			String request = (String) map.get("action");
+			String object = (String) map.get("object");
+			//String objectClassName = map.get("objectClassName");
+			ArrayList<String> args = (ArrayList<String>) map.get("args");
 
 			switch (request) {
 			case "create":
 				Action addaction = new Action();
 				switch (object) {
 				case "start event":
-					GenerateStartEvent(request, args, addaction);
+					GenerateStartEvent(request, args.get(0), addaction);
 					sendAction(addaction);
 					break;
 
-				case "end event ":
-					GenerateEndEvent(request, args, addaction);
+				case "end event":
+					GenerateEndEvent(request, args.get(0), addaction);
 					sendAction(addaction);
 					break;
 
 				case "activity":
-					GenerateActivity(request, args, addaction);
+					GenerateActivity(request, args.get(0), addaction);
 					sendAction(addaction);
 					break;
 
 				case "pool":
-					GeneratePool(request, args, addaction);
+					GeneratePool("pool",args.get(0), addaction);
 					sendAction(addaction);
 					break;
 
 				case "parallel gateway":
-					GeneratePGateway(request, args, addaction);
+					GeneratePGateway(request, null, addaction);
 					sendAction(addaction);
 					break;
 
 				case "exclusive gateway":
-					GenerateEGateway(request, args, addaction);
+					GenerateEGateway(request, null, addaction);
 					sendAction(addaction);
 					break;
 
@@ -78,92 +75,55 @@ public class GenerateBehaviour extends CyclicBehaviour {
 				break;
 
 			case "remove":
-				Action removeaction = new Action();// A noter que les fct
-													// removes sont en fait
-													// removeWithId() et non
-													// removeWithLabel()
-				// factoriser ttes les methodes remove en removeItemWithID()
-				// removeItemWithLabel()
-				switch (object) {
-				case "start event":
-					RemoveStartEvent(request, args, removeaction);
-					sendAction(removeaction);
-					break;
-
-				case "end event":
-					RemoveEndEvent(request, args, removeaction);
-					sendAction(removeaction);
-					break;
-
-				case "activity":
-					RemoveActivity(request, args, removeaction);
-					sendAction(removeaction);
-					break;
-
-				case "pool":
-					RemovePool(request, args, removeaction);
-					sendAction(removeaction);
-					break;
-
-				case "parallel gateway":
-					RemovePGateway(request, args, removeaction);
-					sendAction(removeaction);
-					break;
-
-				case "exclusive gateway":
-					RemoveEGateway(request, args, removeaction);
-					sendAction(removeaction);
-					break;
-				}
+				Action removeaction = new Action();
+				removeItemWithID(request, args.get(0), removeaction);
+				sendAction(removeaction);
 				break;
 
 			case "connect":
-				Action connectaction = new Action();
-				String[] param = args.split(",");
-				connectaction.setType(request);
-				for (int i = 0; i < param.length; i++) {
-					connectaction.addId(param[i]);
-				}
+				
+				Action connectaction = new Action();// {"action":"connect","object":"","objectClassName":null,"args":"partde,arrivea1,arrive2"}
+				connectaction.addId(args.get(0));
+				connectaction.addId(args.get(1));
+				connectaction.setType("connect");;
 				sendAction(connectaction);
+				
 				break;
+
+			case "rename":
+				/*
+				Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
+				String[] param1 = args.split(",");
+				renameaction.setType(request);
+				for (int i = 0; i < 2; i++)
+					renameaction.addId(param1[i]);
+				sendAction(renameaction);
+				*/
+				break;
+
+			case "relink":
+				/*
+				Action relinkaction = new Action();// {"action":"relink","object":"","objectClassName":null,"args":"target,newlink1,newlink2..."}
+				String[] param2 = args.split(",");
+				relinkaction.setType(request);
+				for (int i = 0; i < param2.length; i++)
+					relinkaction.addId(param2[i]);
+				sendAction(relinkaction);
+				*/break;
 
 			}// f switch(request)
 		}// f if(message != null)
 
 	}// f fonction
 
-	private void RemoveEndEvent(String type, String args, Action act) {
-		act.setType(type);
-		act.addId(args);
-	}
-
-	private void RemoveStartEvent(String type, String args, Action act) {
-		act.setType(type);
-		act.addId(args);
-	}
-
-	private void RemoveEGateway(String type, String args, Action act) {
-		act.setType(type);
-		act.addId(args);
-	}
-
-	private void RemovePGateway(String type, String args, Action act) {
-		act.setType(type);
-		act.addId(args);
-	}
-
-	private void RemovePool(String type, String args, Action act) {
-		act.setType(type);
-		act.addId(args);
-	}
-
-	private void RemoveActivity(String type, String args, Action act) {
+	private void removeItemWithID(String type, String args, Action act) {
 		act.setType(type);
 		act.addId(args);
 	}
 
 	public void GenerateStartEvent(String type, String args, Action act) {
 		Start start = new Start(args);
+		System.out.println("creation d'un nouveau strat");
 		act.setType(type);
 		act.addObject(start);
 	}
@@ -195,24 +155,34 @@ public class GenerateBehaviour extends CyclicBehaviour {
 	}
 
 	private void GeneratePool(String type, String args, Action act) {
-		String[] param = args.split(",");
-		Pool p = new Pool(param[0], Integer.parseInt(param[1].trim()),
-				Integer.parseInt(param[2].trim()), Integer.parseInt(param[3]
-						.trim()));
+		act.addId(args);// le lbl est mis dans la liste des id qui sert de liste de parametres
 		act.setType(type);
-		// act.addObject(p);
+	}
+
+	private String getIdfromLabel(String lbl) {
+		Action idaction= new Action();
+		String id = null;
+		idaction.setType("Get Id from Label");
+		idaction.addId(lbl);//encore une fois on utilise id comme liste de param
+		sendAction(idaction);
+		ACLMessage reply = myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+		if (reply!=null){
+			id=reply.getContent();
+		}
+		return id;
 	}
 
 	private void sendAction(Action action) {
 		String content = toJSON(action);
+		System.out.println("envois de l action");
 		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 		msg.addReceiver(new AID("Graphe", AID.ISLOCALNAME));
 		msg.setContent(content);
 		myAgent.send(msg);
 	}
 
-	public HashMap<String, String> toMap(String json) {
-		HashMap<String, String> map = new HashMap<String, String>();
+	public HashMap<String, Object> toMap(String json) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		ObjectMapper mapper = new ObjectMapper();
 		try { // Convert JSON string to Map
 			map = mapper.readValue(json, HashMap.class);
@@ -226,7 +196,7 @@ public class GenerateBehaviour extends CyclicBehaviour {
 		String json = new String();
 		ObjectMapper m = new ObjectMapper();
 		try {
-			json = m.writeValueAsString(act);
+			json = m.writerWithDefaultPrettyPrinter().writeValueAsString(act);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

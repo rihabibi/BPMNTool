@@ -4,6 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME,
+include=JsonTypeInfo.As.PROPERTY,
+property="type")
+@JsonSubTypes({
+@JsonSubTypes.Type(value=Start.class, name="start"),
+@JsonSubTypes.Type(value=End.class, name="end"),
+@JsonSubTypes.Type(value=Task.class, name="task"),
+@JsonSubTypes.Type(value=JoinGateway.class, name="joinGateway"),
+@JsonSubTypes.Type(value=SplitGateway.class, name="splitGateway"),
+})
+
 public abstract class ObjectBPMN {
 	protected int id;
 	protected int x, y; // position
@@ -20,6 +34,7 @@ public abstract class ObjectBPMN {
 												// pour chaque type d'objet
 												// h�rit�
 
+	
 	public ObjectBPMN() {
 		x = 0;
 		y = 0;
@@ -27,9 +42,32 @@ public abstract class ObjectBPMN {
 		colone = 0;
 	}
 
+	
+
+	public ObjectBPMN(int id, int x, int y, int l, int h, int ligne,
+			int colone, int prio, String label,
+			ArrayList<ObjectBPMN> links_partant,
+			ArrayList<ObjectBPMN> links_arrivant, int max_link_partant,
+			int max_link_arrivant) {
+		super();
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.l = l;
+		this.h = h;
+		this.ligne = ligne;
+		this.colone = colone;
+		this.prio = prio;
+		this.label = label;
+		this.links_partant = links_partant;
+		this.links_arrivant = links_arrivant;
+		this.max_link_partant = max_link_partant;
+		this.max_link_arrivant = max_link_arrivant;
+	}
+
 	@Override
 	public String toString() {
-		return Integer.toString(id);
+		return label;
 	}
 
 	// link un objet � l'objet actuel en partant de l'objet actuel
@@ -141,6 +179,7 @@ public abstract class ObjectBPMN {
 	}
 
 	public void setId(int id) {
+		//System.out.println(id);
 		this.id = id;
 	}
 
@@ -239,5 +278,6 @@ public abstract class ObjectBPMN {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
 
 }

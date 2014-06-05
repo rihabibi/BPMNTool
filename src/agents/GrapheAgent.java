@@ -13,6 +13,7 @@ import java.util.HashMap;
 import model.Action;
 import model.ObjectBPMN;
 import model.Pool;
+import model.Start;
 import model.WorkFlow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,20 +21,38 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GrapheAgent extends Agent {
-	WorkFlow wf;
+	WorkFlow wf = new WorkFlow(800, 600);
 
 	@Override
 	protected void setup() {
 		addBehaviour(new GraphBehaviour());
+		addBehaviour(new startBehaviour());
 
 	}
 
-	private class CreationGraph extends OneShotBehaviour {
+	private class startBehaviour extends OneShotBehaviour{
+
 		@Override
 		public void action() {
-			wf = new WorkFlow(800, 600);
-		}
+			
+			// envois du graph de départ vers un agent d'affichage
+			ObjectMapper mapper2 = new ObjectMapper();
+			try {
+				ACLMessage message_reply = new ACLMessage(
+						ACLMessage.REQUEST);
 
+				String s = mapper2.writeValueAsString(wf);
+				message_reply.setContent(s);
+				message_reply.addReceiver(new AID("Vue",
+						AID.ISLOCALNAME));
+				myAgent.send(message_reply);
+				System.out.println("send to view");
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
 	}
 
 	private class GraphBehaviour extends CyclicBehaviour {
@@ -43,6 +62,7 @@ public class GrapheAgent extends Agent {
 			ACLMessage message = myAgent.receive(MessageTemplate
 					.MatchPerformative(ACLMessage.REQUEST));
 			if (message != null) {
+				System.out.println("reception d action");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				// récupération d'une action
@@ -52,10 +72,12 @@ public class GrapheAgent extends Agent {
 							Action.class);
 
 					switch (act.getType()) {
+					case "pool":
+						wf.addNewPool(act.getId().get(0));
+						maj=true;
+						break;
 					case "create":
-						for (int i = 0; i < act.getObjects().size(); i++) {
-							wf.addObject(act.getObjects().get(i));
-						}
+						wf.addObject(act.getObjects().get(0));
 						maj = true;
 						break;
 					case "remove":
@@ -114,25 +136,18 @@ public class GrapheAgent extends Agent {
 					// envois d'un message à l'optimisateur pour faire une mise
 					// a jour si besoin
 					if (maj) {
-						WorkFlow wf = mapper.readValue(message.getContent(),
-								WorkFlow.class);
-						wf.optimise();
-
+	
 						// envois du résultat vers un agent d'affichage
 						ObjectMapper mapper2 = new ObjectMapper();
-						try {
-							ACLMessage message_reply = new ACLMessage(
-									ACLMessage.REQUEST);
+						ACLMessage message_reply = new ACLMessage(
+								ACLMessage.REQUEST);
 
-							String s = mapper2.writeValueAsString(wf);
-							message_reply.setContent(s);
-							message_reply.addReceiver(new AID("Optimisateur",
-									AID.ISLOCALNAME));
-							myAgent.send(message_reply);
-
-						} catch (JsonProcessingException e) {
-							e.printStackTrace();
-						}
+						String s = mapper2.writeValueAsString(wf);
+						message_reply.setContent(s);
+						message_reply.addReceiver(new AID("Optimisateur",
+								AID.ISLOCALNAME));
+						myAgent.send(message_reply);
+						System.out.println("Message envoyé a partir du graph vers opti");
 					}
 
 				} catch (IOException e) {
@@ -157,7 +172,7 @@ public class GrapheAgent extends Agent {
 		return map;
 	}
 
-	public String toJSON(Action act) {
+	public String toJSON(WorkFlow act) {
 		String json = new String();
 		ObjectMapper m = new ObjectMapper();
 		try {

@@ -28,6 +28,7 @@ public class ViewAgent extends GuiAgent {
 	public void setup() {
 		super.setup();
 		view = new View(this);
+		addBehaviour(new GraphBehaviour());
 	}
 
 	@Override
@@ -53,6 +54,7 @@ public class ViewAgent extends GuiAgent {
 			ACLMessage message = myAgent.receive(MessageTemplate
 					.MatchPerformative(ACLMessage.REQUEST));
 			if (message != null) {
+				System.out.println("reception graph");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				try {
@@ -65,6 +67,7 @@ public class ViewAgent extends GuiAgent {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				System.out.println("graph recu");
 				view.refresh(graph);
 			}
 

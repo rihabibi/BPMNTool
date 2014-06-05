@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Start extends ObjectBPMN {
-
+	public Start()
+	{
+		
+	}
 	public Start(String lbl) {
 		super();
 		max_link_partant = 1;
@@ -25,13 +28,11 @@ public class Start extends ObjectBPMN {
 
 		g.setColor(Color.black);
 		g.drawOval(x, y, h, l);
-		String s = "Start";
-		g.drawString(s, (x + (l / 2)) - ((5 * s.length()) / 2), y + h + 12); // positionne
+		
+		g.drawString(label, (x + (l / 2)) - ((5 * label.length()) / 2), y + h + 12); // positionne
 																				// le
 																				// texte
 																				// centr�
-		g.drawString(label, ((x + (l / 2)) - ((5 * label.length()) / 2)) + 15,
-				y + h + 12); // positionne le label centr�
 		super.affiche(g);
 	}
 }
