@@ -6,6 +6,10 @@ import java.awt.Graphics;
 
 public class End extends ObjectBPMN{
 	
+	public End()
+	{
+		
+	}
 	public End(String lbl){
 		super();
 		max_link_partant=0;
@@ -26,9 +30,10 @@ public class End extends ObjectBPMN{
 	    g.setColor(Color.black);
 		g.drawOval(x, y, h,l);
 		
-		String s="End";
-		g.drawString(s, x+5,y+h+12); // positionne le texte centr�
-		g.drawString(label, x+(l/2)-(5*label.length()/2)+15,y+h+12); // positionne le label centr�
+		g.drawString(label, (x + (l / 2)) - ((5 * label.length()) / 2), y + h + 12); // positionne
+		// le
+		// texte
+		// centr�
 		super.affiche(g);
 	}
 }

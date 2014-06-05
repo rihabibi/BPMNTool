@@ -10,13 +10,41 @@ public class WorkFlow {
 	int h = 0; // hauteur de la fenetre
 	int l = 0; // largeur de la fenetre
 	int nb_obj = 0;
+	
+	public void starting()
+	{
+		addNewPool("Pool");
+		Start st1=new Start("Start");
+		addObject(st1);
+		optimise();
+	}
+	public WorkFlow()
+	{
+		
+	}
+	
+	// construct all items
+	public WorkFlow(ArrayList<Pool> pools, IdGenerator iter, int h, int l,
+			int nb_obj, int ecart_H, int ecart_L, int espace_h, int espace_l) {
+		super();
+		Pools = pools;
+		this.iter = iter;
+		this.h = h;
+		this.l = l;
+		this.nb_obj = nb_obj;
+		this.ecart_H = ecart_H;
+		this.ecart_L = ecart_L;
+		this.espace_h = espace_h;
+		this.espace_l = espace_l;
+	}
+
 	int ecart_H = 30;
 	int ecart_L = 30;
 
 	public WorkFlow(int li, int hi) {
 		h = hi;
 		l = li;
-
+		starting();
 	}
 
 	// ajoute une Pool
@@ -33,14 +61,14 @@ public class WorkFlow {
 	// Permet d'ajouter un objet dans une pool /!\ il faut obligatoirement
 	// passer par cette mï¿½thode
 	public void addObject(int pool, ObjectBPMN o) {
-		o.setId(iter.get_id());
+		o.setId(iter.news_id());
 		Pools.get(pool).AddObject(o);
 		nb_obj++;
 	}
 
 	// ajoute dans la pool 0 par défaut
 	public void addObject(ObjectBPMN o) {
-		o.setId(iter.get_id());
+		o.setId(iter.news_id());
 		Pools.get(0).AddObject(o);
 		nb_obj++;
 	}
@@ -180,14 +208,17 @@ public class WorkFlow {
 
 		ArrayList<ArrayList<ObjectBPMN>> Matrice = new ArrayList<ArrayList<ObjectBPMN>>();
 		ArrayList<ObjectBPMN> Ligne;
-
-		ObjectBPMN o = get_objet(1);
-
+		if(nb_obj!=0)
+		{
+			ObjectBPMN o = get_objet(1);
+		
 		Ligne = new ArrayList<ObjectBPMN>();
 		Ligne.add(o);
 		Matrice.add(Ligne);
+		
 		Matrice = opt(Matrice, o, Matrice.size() - 1, 0, 0);
-
+		}
+		
 		place(Matrice);
 
 		// System.out.println(Matrice);
@@ -244,7 +275,7 @@ public class WorkFlow {
 				o.setLigne(l);
 			} else {
 				if (o.getId() == 9) {
-					System.out.println("ok ligne " + l + "pos " + pos);
+					
 				}
 				mat.get(l).add(pos, o);
 				o.setColone(col);
@@ -547,4 +578,6 @@ public class WorkFlow {
 		this.espace_l = espace_l;
 	}
 
+	
+	
 }

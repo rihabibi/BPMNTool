@@ -3,11 +3,28 @@ package model;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+
 public class Pool {
 	private String label;
 	private int y = 0, h = 0, l = 0;
 	private ArrayList<ObjectBPMN> Objects = new ArrayList<ObjectBPMN>();
 
+	
+	
+	public Pool(String label, int y, int h, int l, ArrayList<ObjectBPMN> objects) {
+		super();
+		this.label = label;
+		this.y = y;
+		this.h = h;
+		this.l = l;
+		Objects = objects;
+	}
+
+	public Pool()
+	{
+		
+	}
+	
 	public Pool(String lbl, int yi, int hi, int li) {
 		setLabel(lbl);
 		y = yi;
