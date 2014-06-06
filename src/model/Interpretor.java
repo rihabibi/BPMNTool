@@ -162,7 +162,8 @@ public class Interpretor
 			String actionName = words.get(i-1);
 			String action = getActionId(actionName);
 			currentSentenceModel.setAction(action);
-			lookForObject(words, i);
+			if (!lookForObject(words, i))
+				return null ;
 		} 
 		else 
 		{
@@ -193,7 +194,7 @@ public class Interpretor
 		return null;
 	}
 
-	private void lookForObject(ArrayList<String> words, int from) 
+	private boolean lookForObject(ArrayList<String> words, int from) 
 	{
 		/**
 		 * tous les mots appartenant au type objet avant le séparateur sont
@@ -214,9 +215,16 @@ public class Interpretor
 		}
 		// Recherche les arguments
 		if (found)
+		{
 			lookForArgs(words, i);
-		// Vérifie si l'objet est correct et recherche sa classe dans la kb
-		// verifyObject(currentSentenceModel.getObject());
+			return true;
+		}
+		else 
+		{
+			// Vérifie si l'objet est correct et recherche sa classe dans la kb
+			// verifyObject(currentSentenceModel.getObject());
+			return false;
+		}
 	}
 
 	/**

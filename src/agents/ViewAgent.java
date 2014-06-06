@@ -50,10 +50,12 @@ public class ViewAgent extends GuiAgent {
 	private class GraphBehaviour extends CyclicBehaviour {
 
 		@Override
-		public void action() {
+		public void action() 
+		{
 			ACLMessage message = myAgent.receive(MessageTemplate
 					.MatchPerformative(ACLMessage.REQUEST));
-			if (message != null) {
+			if (message != null) 
+			{
 				System.out.println("reception graph");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
