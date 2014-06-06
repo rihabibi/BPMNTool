@@ -4,25 +4,29 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class WorkFlow {
 	private ArrayList<Pool> Pools = new ArrayList<Pool>();
 	private IdGenerator iter = new IdGenerator();
 	int h = 0; // hauteur de la fenetre
 	int l = 0; // largeur de la fenetre
 	int nb_obj = 0;
-	
-	public void starting()
-	{
+
+	public void starting() {
 		addNewPool("Pool");
-		Start st1=new Start("Start");
+		Start st1 = new Start("Start");
 		addObject(st1);
+		// Task t=new Task("ttt");
+		// addObject(t);
+		// linker(1,2);
 		optimise();
 	}
-	public WorkFlow()
-	{
-		
+
+	public WorkFlow() {
+
 	}
-	
+
 	// construct all items
 	public WorkFlow(ArrayList<Pool> pools, IdGenerator iter, int h, int l,
 			int nb_obj, int ecart_H, int ecart_L, int espace_h, int espace_l) {
@@ -144,19 +148,42 @@ public class WorkFlow {
 
 	public void retirer_objet(int id)// retire un objet selon son id
 	{
-		Pool p = get_pool(get_pool_objet(id));
-		ObjectBPMN o = get_objet(id);
-		ArrayList<ObjectBPMN> lst = o.getLinks_arrivant();
-		for (int i = 0; i < lst.size(); i++) {
-			unlinker(id, lst.get(i).getId());
-		}
+		if (get_objet(id) != null) {
+			Pool p = get_pool(get_pool_objet(id));
+			ObjectBPMN o = get_objet(id);
+			ArrayList<ObjectBPMN> lst = o.getLinks_arrivant();
+			for (int i = 0; i < lst.size(); i++) {
+				unlinker(id, lst.get(i).getId());
+			}
 
-		ArrayList<ObjectBPMN> lst2 = o.getLinks_partant();
-		for (int i = 0; i < lst2.size(); i++) {
-			unlinker(id, lst2.get(i).getId());
+			ArrayList<ObjectBPMN> lst2 = o.getLinks_partant();
+			for (int i = 0; i < lst2.size(); i++) {
+				unlinker(id, lst2.get(i).getId());
+			}
+			p.delete_obj(id);
+		} else {
+			JOptionPane.showMessageDialog(null,
+					"Supression impossible l'objet n'existe pas");
 		}
-		p.delete_obj(id);
+	}
 
+	public void change_pool(int id, int pool)// change la pool de l'objet actuel
+	{
+		Pool p = get_pool(pool);
+		if (p != null) {
+			ObjectBPMN o = get_objet(id);
+			if (o != null) {
+				Pool p2 = get_pool(get_pool_objet(id));
+				p2.getObjects().remove(o);
+				p.AddObject(o);
+			} else {
+				JOptionPane.showMessageDialog(null,
+						"L'objet demandé n'existe pas.");
+			}
+		} else {
+			JOptionPane
+					.showMessageDialog(null, "La pool demandé n'existe pas.");
+		}
 	}
 
 	// crï¿½ï¿½ un lien entre deux objets
@@ -172,6 +199,10 @@ public class WorkFlow {
 		} else {
 			// error
 			System.out.println("Problem de linkage");
+			JOptionPane
+					.showMessageDialog(
+							null,
+							"Linkage impossible, l'un des objets n'existe pas ou ne peut est lier à plus d'objet");
 		}
 	}
 
@@ -208,17 +239,16 @@ public class WorkFlow {
 
 		ArrayList<ArrayList<ObjectBPMN>> Matrice = new ArrayList<ArrayList<ObjectBPMN>>();
 		ArrayList<ObjectBPMN> Ligne;
-		if(nb_obj!=0)
-		{
+		if (nb_obj != 0) {
 			ObjectBPMN o = get_objet(1);
-		
-		Ligne = new ArrayList<ObjectBPMN>();
-		Ligne.add(o);
-		Matrice.add(Ligne);
-		
-		Matrice = opt(Matrice, o, Matrice.size() - 1, 0, 0);
+
+			Ligne = new ArrayList<ObjectBPMN>();
+			Ligne.add(o);
+			Matrice.add(Ligne);
+
+			Matrice = opt(Matrice, o, Matrice.size() - 1, 0, 0);
 		}
-		
+
 		place(Matrice);
 
 		// System.out.println(Matrice);
@@ -275,7 +305,7 @@ public class WorkFlow {
 				o.setLigne(l);
 			} else {
 				if (o.getId() == 9) {
-					
+
 				}
 				mat.get(l).add(pos, o);
 				o.setColone(col);
@@ -578,6 +608,4 @@ public class WorkFlow {
 		this.espace_l = espace_l;
 	}
 
-	
-	
 }
