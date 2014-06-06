@@ -26,9 +26,9 @@ public abstract class ObjectBPMN {
 	protected int prio = -1;
 	protected String label = "";
 
-	protected ArrayList<ObjectBPMN> links_partant = new ArrayList<ObjectBPMN>(); // liens
+	protected ArrayList<Integer> links_partant = new ArrayList<Integer>(); // liens
 																					// partant
-	protected ArrayList<ObjectBPMN> links_arrivant = new ArrayList<ObjectBPMN>(); // liens
+	protected ArrayList<Integer> links_arrivant = new ArrayList<Integer>(); // liens
 																					// arrivant
 	int max_link_partant, max_link_arrivant; // nombre de liens max d�finis
 												// pour chaque type d'objet
@@ -46,8 +46,8 @@ public abstract class ObjectBPMN {
 
 	public ObjectBPMN(int id, int x, int y, int l, int h, int ligne,
 			int colone, int prio, String label,
-			ArrayList<ObjectBPMN> links_partant,
-			ArrayList<ObjectBPMN> links_arrivant, int max_link_partant,
+			ArrayList<Integer> links_partant,
+			ArrayList<Integer> links_arrivant, int max_link_partant,
 			int max_link_arrivant) {
 		super();
 		this.id = id;
@@ -71,12 +71,12 @@ public abstract class ObjectBPMN {
 	}
 
 	// link un objet � l'objet actuel en partant de l'objet actuel
-	public void linker_partant(ObjectBPMN o) {
+	public void linker_partant(Integer o) {
 		links_partant.add(o);
 	}
 
 	// link un objet � l'objet actuel en partant de cet objet
-	public void linker_arrivant(ObjectBPMN o) {
+	public void linker_arrivant(Integer o) {
 		links_arrivant.add(o);
 	}
 
@@ -107,7 +107,7 @@ public abstract class ObjectBPMN {
 	}
 
 	// permet de supprimer le lien vers un objet
-	public void unlink(ObjectBPMN o) {
+	public void unlink(Integer o) {
 		links_partant.remove(o);
 		links_arrivant.remove(o);
 	}
@@ -117,7 +117,7 @@ public abstract class ObjectBPMN {
 
 	}
 
-	public void affiche_link(Graphics g) {
+	public void affiche_link(Graphics g, WorkFlow wf) {
 		// affichage de l'id
 		g.drawString(Integer.toString(id), x - 10, y - 1);
 
@@ -125,7 +125,7 @@ public abstract class ObjectBPMN {
 		g.setColor(Color.BLUE);
 		// gestion de l'affichge des liens sortants
 		for (int i = 0; i < links_partant.size(); i++) {
-			ObjectBPMN o = links_partant.get(i);
+			ObjectBPMN o = wf.get_objet(links_partant.get(i));
 			if (o.getX() > (x + l)) // dessin si le deuxieme objet est �
 									// droite du premier
 			{
@@ -199,19 +199,19 @@ public abstract class ObjectBPMN {
 		this.y = y;
 	}
 
-	public ArrayList<ObjectBPMN> getLinks_partant() {
+	public ArrayList<Integer> getLinks_partant() {
 		return links_partant;
 	}
 
-	public void setLinks_partant(ArrayList<ObjectBPMN> links_partant) {
+	public void setLinks_partant(ArrayList<Integer> links_partant) {
 		this.links_partant = links_partant;
 	}
 
-	public ArrayList<ObjectBPMN> getLinks_arrivant() {
+	public ArrayList<Integer> getLinks_arrivant() {
 		return links_arrivant;
 	}
 
-	public void setLinks_arrivant(ArrayList<ObjectBPMN> links_arrivant) {
+	public void setLinks_arrivant(ArrayList<Integer> links_arrivant) {
 		this.links_arrivant = links_arrivant;
 	}
 

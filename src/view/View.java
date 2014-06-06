@@ -4,6 +4,7 @@ import jade.gui.GuiEvent;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -49,16 +50,19 @@ public class View extends JFrame {
 
 	private final JFileChooser choose = new JFileChooser();
 	private final JMenuBar bar = new JMenuBar();
-	private final JMenu fileMenu = new JMenu("Fichier");
-	private final JMenuItem oppenFile = new JMenuItem("Ouvrir");
-	private final JMenuItem save = new JMenuItem("Sauvegarder");
-	private final JMenuItem saveAs = new JMenuItem("Sauvegarder Sous");
-	private final JMenuItem quit = new JMenuItem("Quitter");
+	private final JMenu fileMenu = new JMenu("File");
+	private final JMenu help = new JMenu("Help");
+	private final JMenuItem newFile = new JMenuItem("New");
+	private final JMenuItem oppenFile = new JMenuItem("Open");
+	private final JMenuItem save = new JMenuItem("Save");
+	private final JMenuItem saveAs = new JMenuItem("Save as");
+	private final JMenuItem quit = new JMenuItem("Quit");
 	private final StyleContext context = new StyleContext();
 	private final StyledDocument document = new DefaultStyledDocument(context);
 	private final JTextPane historic = new JTextPane(document);
 	private final JScrollPane conversationContent = new JScrollPane(historic);
 	private final GraphContainer graphContent = new GraphContainer();
+	private final JPanel graph = new JPanel();
 	private final JPanel pane = new JPanel(new GridBagLayout());
 	private final JPanel conversation = new JPanel(new GridBagLayout());
 	private final JButton micro = new JButton(new ImageIcon((((new ImageIcon(
@@ -71,7 +75,7 @@ public class View extends JFrame {
 	public View(ViewAgent a) {
 		viewagent = a;
 		this.setVisible(true);
-		this.setSize(1200, 650);
+		this.setSize(1200, 640);
 		this.setResizable(false);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -96,13 +100,17 @@ public class View extends JFrame {
 		title = BorderFactory.createTitledBorder(blackline, "Assitant");
 		title.setTitleJustification(TitledBorder.CENTER);
 
+		graph.add(graphContent);
+		graphContent.setBackground(new Color(255, 255, 255));
+		Dimension dimension = new Dimension(800, 500);
+		graphContent.setPreferredSize(dimension);
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 
 		actions.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		text.setWrapStyleWord(true);
 		text.setLineWrap(true);
-		micro.setBackground(Color.gray);
+		micro.setBackground(new Color(57, 74, 54));
 		micro.setFocusable(false);
 		final JToolTip microTip = new JToolTip();
 		microTip.add(micro);
@@ -110,11 +118,15 @@ public class View extends JFrame {
 		text.setMargin(new Insets(5, 5, 0, 5));
 		// text.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+		fileMenu.add(newFile);
 		fileMenu.add(oppenFile);
 		fileMenu.add(save);
 		fileMenu.add(saveAs);
 		fileMenu.add(quit);
 		bar.add(fileMenu);
+		bar.add(help);
+		help.setMenuLocation(30, 30);
+
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.weightx = 0;
 		constraints.gridx = 0;
@@ -167,12 +179,13 @@ public class View extends JFrame {
 		constraints.gridx = 1;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
-		constraints.ipady = 528;
+		constraints.ipady = 523;
 		constraints.insets = new Insets(20, 0, 0, 0);
-		title = BorderFactory.createTitledBorder(blackline, "BPMN Graphic");
+		title = BorderFactory.createTitledBorder(blackline, "BPMN Graph");
 		title.setTitleJustification(TitledBorder.CENTER);
-		graphContent.setBorder(title);
-		pane.add(graphContent, constraints);
+		graph.setBorder(title);
+		pane.add(graph, constraints);
+		// graph.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 		this.add(pane);
 
@@ -272,7 +285,6 @@ public class View extends JFrame {
 						document.setParagraphAttributes(pos,
 								actionsText.length(), right, true);
 					} catch (BadLocationException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 
@@ -288,7 +300,7 @@ public class View extends JFrame {
 					micro.setFocusable(true);
 					isMicroOn = false;
 					System.out.println("micro off");
-					micro.setBackground(Color.gray);
+					micro.setBackground(new Color(57, 74, 54));
 					micro.setFocusable(false);
 					microTip.setVisible(false);
 					micro.setToolTipText("Micro off");
@@ -298,7 +310,7 @@ public class View extends JFrame {
 					micro.setFocusable(false);
 					isMicroOn = true;
 					System.out.println("micro on");
-					micro.setBackground(new Color(159, 82, 85));
+					micro.setBackground(new Color(130, 255, 130));
 					micro.setFocusable(false);
 					micro.setToolTipText("Micro on");
 				}
