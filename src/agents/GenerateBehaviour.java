@@ -100,17 +100,12 @@ public class GenerateBehaviour extends CyclicBehaviour {
 				sendAction(renameaction);
 				*/
 				break;
-
-			case "relink":
-				/*
-				Action relinkaction = new Action();// {"action":"relink","object":"","objectClassName":null,"args":"target,newlink1,newlink2..."}
-				String[] param2 = args.split(",");
-				relinkaction.setType(request);
-				for (int i = 0; i < param2.length; i++)
-					relinkaction.addId(param2[i]);
-				sendAction(relinkaction);
-				*/break;
-
+				
+			case "put":
+				Action putaction = new Action();
+				putaction.addId(args.get(0));
+				putaction.addId(args.get(1));
+				break;
 			}// f switch(request)
 		}// f if(message != null)
 
