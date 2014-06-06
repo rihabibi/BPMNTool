@@ -16,9 +16,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 
-public class Interpretor {
+public class Interpretor 
+{
 	public static String KB_FILENAME = "doc/kb.n3";
 	public static String BPMN_PREFIX = "";
 	public static String OBJECT_NAME = "objectName";
@@ -33,11 +38,13 @@ public class Interpretor {
 	IndexLARQ separatorIndex;
 	SentenceModel currentSentenceModel;
 
-	public Interpretor() {
+	public Interpretor()
+	{
 		init(KB_FILENAME);
 	}
 
-	private void init(String fileName) {
+	private void init(String fileName) 
+	{
 		/**
 		 * crée le model Jena lit la base de connaissance crée les index
 		 */
@@ -48,7 +55,8 @@ public class Interpretor {
 		createIndexes();
 	}
 
-	private void createIndexes() {
+	private void createIndexes() 
+	{
 		String nsbpmn = model.getNsPrefixURI(BPMN_PREFIX);
 		Property p1 = model.getProperty(nsbpmn + OBJECT_NAME);
 		Property p2 = model.getProperty(nsbpmn + ACTION_NAME);
@@ -62,7 +70,8 @@ public class Interpretor {
 	}
 
 	// retourne l'index basé sur tous les littéraux
-	private IndexLARQ getWholeStringIndex() {
+	private IndexLARQ getWholeStringIndex() 
+	{
 		IndexBuilderString larqBuilder = new IndexBuilderString();
 		larqBuilder.indexStatements(model.listStatements());
 		larqBuilder.closeWriter();
@@ -71,7 +80,8 @@ public class Interpretor {
 	}
 
 	// Retourne l'index basé sur une propriété
-	private IndexLARQ getStringIndex(Property p) {
+	private IndexLARQ getStringIndex(Property p) 
+	{
 		IndexBuilderString larqBuilder = new IndexBuilderString(p);
 		larqBuilder.indexStatements(model.listStatements());
 		larqBuilder.closeWriter();
@@ -80,27 +90,32 @@ public class Interpretor {
 	}
 
 	// Recherche si une chaîne est dans l'index principal
-	public boolean search(String s) {
+	public boolean search(String s) 
+	{
 		return inIndex(mainIndex, s);
 	}
 
 	// Est-ce un terme séparator
-	public boolean isSeparator(String s) {
+	public boolean isSeparator(String s) 
+	{
 		return inIndex(separatorIndex, s);
 	}
 
 	// Est-ce un terme d'objet
-	public boolean isObject(String s) {
+	public boolean isObject(String s)
+	{
 		return inIndex(objectIndex, s);
 	}
 
 	// Est-ce un terme d'activité
-	public boolean isAction(String s) {
+	public boolean isAction(String s) 
+	{
 		return inIndex(actionIndex, s);
 	}
 
 	// Recherche si une chaîne est dans l'index
-	private boolean inIndex(IndexLARQ index, String s) {
+	private boolean inIndex(IndexLARQ index, String s) 
+	{
 		NodeIterator iterator = index.searchModelByIndex(s);
 		return iterator.hasNext();
 	}
@@ -113,14 +128,17 @@ public class Interpretor {
 	 * @return: un SentenceModel contenant toutes les informations extraites de
 	 *          l'analyse
 	 */
-	public SentenceModel analyzeSentence(String s) {
+	public SentenceModel analyzeSentence(String s) 
+	{
 		// Sépare en token
 		String[] pieces = s.split(SPLIT_CHARACTERS);
 		currentSentenceModel = new SentenceModel();
 		ArrayList<String> words = new ArrayList<String>();
 		// Ne garde que les tokens non vides
-		for (int i = 0; i < pieces.length; i++) {
-			if (pieces[i].length() > 0) {
+		for (int i = 0; i < pieces.length; i++) 
+		{
+			if (pieces[i].length() > 0) 
+			{
 				words.add(pieces[i]);
 			}
 		}
@@ -130,36 +148,63 @@ public class Interpretor {
 		/**
 		 * On recherche l'activité
 		 */
-		while (!found && (i < words.size())) {
+		while (!found && (i < words.size())) 
+		{
 			found = isAction(words.get(i));
 			i++;
 		}
-		if (found) {
+		if (found) 
+		{
 			/**
 			 * Activité trouvée on cherche la suite de mots décrivant l'objet
 			 * jusqu'au séparateur
 			 */
-			currentSentenceModel.setAction(words.get(i - 1));
+			String actionName = words.get(i-1);
+			String action = getActionId(actionName);
+			currentSentenceModel.setAction(action);
 			lookForObject(words, i);
-		} else {
+		} 
+		else 
+		{
+			return null;
 			/**
 			 * L'activité n'est pas trouvée on cherche les éléments objets
 			 * à partir du début jusqu'au séparateur
 			 */
-			lookForObject(words, 0);
+			//lookForObject(words, 0);
 		}
 		return currentSentenceModel;
 	}
+	
+	public String getActionId(String actionName)
+	{
+		String nsrdf = model.getNsPrefixURI(""); 
+		Property type = model.getProperty(nsrdf+"actionName"); 
+		StmtIterator iterator =  model.listStatements(new SimpleSelector((Resource)null,type,actionName));
+		while(iterator.hasNext())
+		{	
+			String subject = iterator.nextStatement().getSubject().toString();
+			String[] parts = subject.split("#");
+			if (!parts[1].equals("Separator")){
+				System.out.println(parts[1].toLowerCase());
+				return parts[1].toLowerCase();
+			}
+		}
+		return null;
+	}
 
-	private void lookForObject(ArrayList<String> words, int from) {
+	private void lookForObject(ArrayList<String> words, int from) 
+	{
 		/**
 		 * tous les mots appartenant au type objet avant le séparateur sont
 		 * ajoutés comme éléments d'objet
 		 */
 		boolean found = false;
 		int i = from;
-		while (!found && (i < words.size())) {
-			if (isObject(words.get(i))) {
+		while (!found && (i < words.size())) 
+		{
+			if (isObject(words.get(i))) 
+			{
 				currentSentenceModel.addObjectElement(words.get(i));
 			}
 			found = isSeparator(words.get(i));
@@ -179,19 +224,25 @@ public class Interpretor {
 	 * @param from
 	 *            : rang à partir duquel prendre les mots
 	 */
-	private void lookForArgs(ArrayList<String> words, int from) {
+	private void lookForArgs(ArrayList<String> words, int from) 
+	{
 		int i = from;
-		while (i < words.size()) {
+		while (i < words.size()) 
+		{
 			if (!isSeparator(words.get(i)) && !words.get(i).equals("to")
-					&& !words.get(i).equals("and")) {
+					&& !words.get(i).equals("and")
+					&& !words.get(i).equals("in")) 
+			{
 				currentSentenceModel.addArgsElement(words.get(i));
 			}
 			i++;
 		}
 	}
 
-	private void verifyObject(String s) {
-		if (isObject(s)) {
+	private void verifyObject(String s)
+	{
+		if (isObject(s))
+		{
 			lookForObjectClass(s);
 		}
 	}
@@ -201,14 +252,16 @@ public class Interpretor {
 	 * l'objet ne la trouve dans le cas où les mots sont corrects mais pas leur
 	 * ensemble (horizontal event)
 	 */
-	private void lookForObjectClass(String s) {
+	private void lookForObjectClass(String s) 
+	{
 		String queryResult = runquery(createObjectClassQuery(s));
 		currentSentenceModel
 				.setObjectClassName(analyseQueryResult(queryResult));
 	}
 
 	// Exécute une requête SELECT à partir d'une chaîne
-	private String runquery(String query) {
+	private String runquery(String query)
+	{
 		QueryExecution queryExecution = QueryExecutionFactory.create(query,
 				model);
 		ResultSet r = queryExecution.execSelect();
@@ -226,11 +279,13 @@ public class Interpretor {
 	 * @param queryResult
 	 * @return
 	 */
-	private String analyseQueryResult(String queryResult) {
+	private String analyseQueryResult(String queryResult) 
+	{
 		Scanner sc = new Scanner(queryResult);
 		sc.nextLine();
 		String v = "";
-		if (sc.hasNextLine()) {
+		if (sc.hasNextLine()) 
+		{
 			v = sc.nextLine();
 		}
 		sc.close();
@@ -243,7 +298,8 @@ public class Interpretor {
 	 * @param objectName
 	 * @return
 	 */
-	private String createObjectClassQuery(String objectName) {
+	private String createObjectClassQuery(String objectName) 
+	{
 		StringBuilder sb = new StringBuilder();
 		String nsbpmn = model.getNsPrefixURI(BPMN_PREFIX);
 		sb.append("PREFIX : <" + nsbpmn + "> ");

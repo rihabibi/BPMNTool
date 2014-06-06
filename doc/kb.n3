@@ -13,9 +13,15 @@
   :sepName "and" ;
   :sepName "number" ;
   :sepName "object" ;
+  :sepName "pool";
   :sepName "called" ;
+  :sepName "named" ;
   :sepName "title" ;
-  :sepName "between" .
+  :sepName "between" ;
+  :sepName "in" ;
+  :sepName "inside" ;
+  :sepName "into" ;
+  :sepName "under" .
   
 :Action a owl:Class .
 :actionName a owl:DatatypeProperty ;
@@ -49,12 +55,11 @@
    :className "bpmn.model.object.EndEvent" .
 :activity a :Object ;
    :objectName  "activity" ;
+   :objectName "task" ;
    :className "bpmn.model.object.Activity" .
-:link a :Object ;
-   :objectName  "link" ;
-   :className "bpmn.model.object.Link" .
 :parallelGateway a :Object ;
    :objectName  "parallel gateway" ;
+   :objectName "parallel" ;
    :className "bpmn.model.object.parallelGateway" .
 :exclusiveGateway a :Object ;
    :objectName  "exclusive gateway" ;
@@ -62,14 +67,27 @@
    
 :Create a :Action ;
    :actionName "create" ;
-   :actionName "draw" ;
-   :actionName "to connection" .
+   :actionName "draw" .
 
 :Connect a :Action ;
-   :actionName "connect" .
+   :actionName "connect" ;
+   :actionName "link" .
 
 :Save a :Action ;
    :actionName "save" .
+ 
+:Put a :Action ; 
+	:actionName "put" ;
+	:actionName "place" ;
+	:actionName "insert" .
 
 :Remove a :Action ;
-   :actionName "remove" .
+   :actionName "remove" ;
+   :actionName "delete" .
+   
+:Rename a :Action ;
+	:actionName "rename" ;
+	:actionName "name" . 
+	
+:Relink a :Action ; 
+	:actionName "relink" .

@@ -26,11 +26,13 @@ public class InterpreteurAgent extends Agent {
 			ACLMessage m = receive(mt);
 			if (m != null) {
 				SentenceModel sm = interprete.analyzeSentence(m.getContent());
-				ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
-				message.addReceiver(new AID("Generateur", AID.ISLOCALNAME));
-				message.setContent(sm.toJSON());
-				send(message);
-				System.out.println(sm.toJSON());
+				if (sm!=null){
+					ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+					message.addReceiver(new AID("Generateur", AID.ISLOCALNAME));
+					message.setContent(sm.toJSON());
+					send(message);
+					System.out.println(sm.toJSON());
+				}
 			} else {
 				block();
 			}

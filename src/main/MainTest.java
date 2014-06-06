@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 public class MainTest {
 	public static Logger logger = Logger.getLogger("com.hp");
 	// phrase ok
-	public static String SENTENCE_1 = "ok, create   a horizontal pool called SalesRep";
+	public static String SENTENCE_1 = " create rfgdlgkd";
 	// phrase ok
-	public static String SENTENCE_2 = "ok, remove   a vertical pool called SalesRep";
+	public static String SENTENCE_2 = "   a vertical pool called SalesRep";
 	// pas d'activit� pas d'arguments ; on r�cup�re l'objet
 	public static String SENTENCE_3 = "ok, create link between Enter Order and Store Order ";
 	// objet incomplet ; on r�cup�re l'argument
@@ -20,7 +20,7 @@ public class MainTest {
 	// pas de s�parateur ; on r�cup�re l'activit� et l'objet
 	public static String SENTENCE_5 = "ok, create   a horizontal pool SalesRep";
 	// l'objet n'est pas dans la base mais chacun des mots y est
-	public static String SENTENCE_6 = "ok, create   a horizontal event called SalesRep";
+	public static String SENTENCE_6 = "ok, draw   a horizontal event called SalesRep";
 
 	/**
 	 * @param args
@@ -63,7 +63,8 @@ public class MainTest {
 		SentenceModel m1 = interpretor.analyzeSentence(SENTENCE_1);
 		System.out.println(m1.toJSON());
 		SentenceModel m2 = interpretor.analyzeSentence(SENTENCE_2);
-		System.out.println(m2.toJSON());
+		if (m2!=null)
+			System.out.println(m2.toJSON());
 		SentenceModel m3 = interpretor.analyzeSentence(SENTENCE_4);
 		System.out.println(m3.toJSON());
 		SentenceModel m4 = interpretor.analyzeSentence(SENTENCE_4);

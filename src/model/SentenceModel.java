@@ -52,7 +52,7 @@ public class SentenceModel {
 	}
 
 	public void addArgsElement(String element) {
-		String s = args.size() == 0 ? element : " " + element;
+		String s = args.size() == 0 ? element : element;
 		args.add(s);
 	}
 

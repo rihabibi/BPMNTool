@@ -90,7 +90,7 @@ public class GrapheAgent extends Agent {
 					case "connect":
 						wf.linker(Integer.parseInt(act.getId().get(0)),
 								Integer.parseInt(act.getId().get(1)));
-						maj = true;
+						/*maj = true;*/
 						break;
 					case "unconnect":
 						wf.unlinker(Integer.parseInt(act.getId().get(0)),
