@@ -200,18 +200,21 @@ public class Interpretor
 		 * ajoutés comme éléments d'objet
 		 */
 		boolean found = false;
+		boolean foundObject = false;
 		int i = from;
 		while (!found && (i < words.size())) 
 		{
 			if (isObject(words.get(i))) 
 			{
 				currentSentenceModel.addObjectElement(words.get(i));
+				foundObject = true;
 			}
 			found = isSeparator(words.get(i));
 			i++;
 		}
 		// Recherche les arguments
-		lookForArgs(words, i);
+		if (found)
+			lookForArgs(words, i);
 		// Vérifie si l'objet est correct et recherche sa classe dans la kb
 		// verifyObject(currentSentenceModel.getObject());
 	}
