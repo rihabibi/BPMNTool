@@ -34,7 +34,7 @@ public class GrapheAgent extends Agent {
 		@Override
 		public void action() {
 
-			// envois du graph de départ vers un agent d'affichage
+			// envois du graph de dÃ©part vers un agent d'affichage
 			ObjectMapper mapper2 = new ObjectMapper();
 			try {
 				ACLMessage message_reply = new ACLMessage(ACLMessage.REQUEST);
@@ -62,9 +62,9 @@ public class GrapheAgent extends Agent {
 				System.out.println("reception d action");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-				// récupération d'une action
+				// rÃ©cupÃ©ration d'une action
 				try {
-					// act est l'action envoyées
+					// act est l'action envoyÃ©es
 					Action act = mapper.readValue(message.getContent(),
 							Action.class);
 
@@ -87,7 +87,7 @@ public class GrapheAgent extends Agent {
 					case "connect":
 						wf.linker(Integer.parseInt(act.getId().get(0)),
 								Integer.parseInt(act.getId().get(1)));
-						/*maj = true;*/
+						maj = true;
 						break;
 					case "put":
 						wf.linker(Integer.parseInt(act.getId().get(0)),
@@ -100,7 +100,7 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "get_label":
-						// si on demande au graph de renvoyer un objet grace à
+						// si on demande au graph de renvoyer un objet grace Ã 
 						// son label
 						ObjectBPMN o = wf.get_objet(act.getId().get(0));
 						ObjectMapper mapper2 = new ObjectMapper();
@@ -117,7 +117,7 @@ public class GrapheAgent extends Agent {
 						}
 						break;
 					case "get_pool":
-						// même chose mais avec une pool
+						// mÃªme chose mais avec une pool
 						Pool o2 = wf.get_pool(act.getId().get(0));
 						ObjectMapper mapper3 = new ObjectMapper();
 						try {
@@ -135,11 +135,11 @@ public class GrapheAgent extends Agent {
 
 					}
 
-					// envois d'un message à l'optimisateur pour faire une mise
+					// envois d'un message Ã  l'optimisateur pour faire une mise
 					// a jour si besoin
 					if (maj) {
 
-						// envois du résultat vers un agent d'affichage
+						// envois du rÃ©sultat vers un agent d'affichage
 						ObjectMapper mapper2 = new ObjectMapper();
 						ACLMessage message_reply = new ACLMessage(
 								ACLMessage.REQUEST);
@@ -150,7 +150,7 @@ public class GrapheAgent extends Agent {
 								AID.ISLOCALNAME));
 						myAgent.send(message_reply);
 						System.out
-								.println("Message envoyé a partir du graph vers opti");
+								.println("Message envoyÃ© a partir du graph vers opti");
 					}
 
 				} catch (IOException e) {
