@@ -1,0 +1,94 @@
+@prefix :        <http://www.owl-ontologies.com/bpmn/kb#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+:sepName a owl:DatatypeProperty ;
+   rdfs:domain :Separator ;
+   rdfs:range xsd:string .
+
+:Separator a owl:Class ;
+  :sepName "to" ;
+  :sepName "and" ;
+  :sepName "number" ;
+  :sepName "object" ;
+  :sepName "pool";
+  :sepName "called" ;
+  :sepName "named" ;
+  :sepName "title" ;
+  :sepName "between" ;
+  :sepName "in" ;
+  :sepName "inside" ;
+  :sepName "into" ;
+  :sepName "under" .
+  
+:Action a owl:Class .
+:actionName a owl:DatatypeProperty ;
+   rdfs:domain :Action ;
+   rdfs:range xsd:string .
+
+:Object a owl:Class .
+:objectName a owl:DatatypeProperty ;
+   rdfs:domain :Object ;
+   rdfs:range xsd:string .
+   
+# La classe JAVA de l'objet
+# Pour une instanciation plus simple
+# ex : Class.forName("java.awt.Button").newInstance ()
+
+:className a owl:DatatypeProperty ;
+   rdfs:domain :Object ;
+   rdfs:range xsd:string .
+      
+:horizontalPool a :Object ;
+   :objectName "horizontal pool" ;
+   :className "bpmn.model.object.HorizontalPool" .
+:verticalPool a :Object ;
+   :objectName  "vertical pool" ;
+   :className "bpmn.model.object.VerticalPool" .
+:startEvent a :Object ;
+   :objectName  "start event" ;
+   :className "bpmn.model.object.StartEvent" .
+:endEvent a :Object ;
+   :objectName  "end event" ;
+   :className "bpmn.model.object.EndEvent" .
+:activity a :Object ;
+   :objectName  "activity" ;
+   :objectName "task" ;
+   :className "bpmn.model.object.Activity" .
+:parallelGateway a :Object ;
+   :objectName  "parallel gateway" ;
+   :objectName "parallel" ;
+   :className "bpmn.model.object.parallelGateway" .
+:exclusiveGateway a :Object ;
+   :objectName  "exclusive gateway" ;
+   :className "bpmn.model.object.exclusiveGateway" .
+   
+:Create a :Action ;
+   :actionName "create" ;
+   :actionName "draw" .
+
+:Connect a :Action ;
+   :actionName "connect" ;
+   :actionName "link" .
+
+:Save a :Action ;
+   :actionName "save" .
+ 
+:Put a :Action ; 
+	:actionName "add" ;
+	:actionName "put" ;
+	:actionName "place" ;
+	:actionName "insert" .
+
+:Remove a :Action ;
+   :actionName "remove" ;
+   :actionName "delete" .
+   
+:Rename a :Action ;
+	:actionName "rename" ;
+	:actionName "name" . 
+	
+:Relink a :Action ; 
+	:actionName "relink" .

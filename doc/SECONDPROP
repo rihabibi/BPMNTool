@@ -1,0 +1,6 @@
+main=false 
+gui=false 
+container-name = SecondBoot
+host = localhost
+local-port=1099 
+port=1099
