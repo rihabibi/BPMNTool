@@ -14,6 +14,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 
@@ -22,6 +24,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -44,7 +47,7 @@ import javax.swing.text.StyledDocument;
 import model.WorkFlow;
 import agents.ViewAgent;
 
-public class View extends JFrame {
+public class View extends JFrame implements PropertyChangeListener {
 	private ViewAgent viewagent;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -69,6 +72,8 @@ public class View extends JFrame {
 			"doc/micro.png")).getImage()).getScaledInstance(45, 45,
 			java.awt.Image.SCALE_SMOOTH))));
 	private final JTextArea text = new JTextArea(3, 2);
+	private final JLabel verifLabel = new JLabel(" Enter a command");
+	private final JLabel status = new JLabel(" Status :");
 	private final JScrollPane actions = new JScrollPane(text);
 	boolean isMicroOn = false;
 
@@ -95,7 +100,7 @@ public class View extends JFrame {
 		left.addAttribute(StyleConstants.Foreground,
 				new Color(0x08, 0x10, 0x73));
 
-		Border blackline = BorderFactory.createLineBorder(Color.black);
+		Border blackline = BorderFactory.createLineBorder(Color.gray);
 		TitledBorder title;
 		title = BorderFactory.createTitledBorder(blackline, "Assitant");
 		title.setTitleJustification(TitledBorder.CENTER);
@@ -163,6 +168,24 @@ public class View extends JFrame {
 		conversationConstraints.gridwidth = 1;
 		conversationConstraints.ipady = 9;
 		conversation.add(micro, conversationConstraints);
+
+		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
+		conversationConstraints.weightx = 0.01;
+		conversationConstraints.gridx = 0;
+		conversationConstraints.gridy = 2;
+		conversationConstraints.gridwidth = 1;
+		conversationConstraints.ipady = 1;
+		conversation.add(status, conversationConstraints);
+		
+		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
+		conversationConstraints.weightx = 0.01;
+		conversationConstraints.gridx = 1;
+		conversationConstraints.gridy = 2;
+		conversationConstraints.gridwidth = 1;
+		conversationConstraints.ipady = 1;
+		verifLabel.setForeground(Color.gray);
+		conversation.add(verifLabel, conversationConstraints);
+		
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.weightx = 0.25;
@@ -335,6 +358,23 @@ public class View extends JFrame {
 
 	public void setPcs(PropertyChangeSupport pcs) {
 		this.pcs = pcs;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		
+		if(arg0.getPropertyName().equals("message"))
+		{
+			if (arg0.getNewValue().equals("OK")){
+				verifLabel.setText("Message understood");
+				verifLabel.setForeground(Color.green);
+			}
+			else if (arg0.getNewValue().equals("ERROR")){
+				verifLabel.setText("The command is incorrect. Please try again.");
+				verifLabel.setForeground(Color.red);
+			}
+			
+		}
 	}
 
 }

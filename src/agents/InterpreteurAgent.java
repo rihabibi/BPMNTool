@@ -29,6 +29,7 @@ public class InterpreteurAgent extends Agent
 			ACLMessage m = receive(mt);
 			if (m != null)
 			{
+				String verif="ERROR";
 				SentenceModel sm = interprete.analyzeSentence(m.getContent());
 				if (sm!=null)
 				{
@@ -37,15 +38,14 @@ public class InterpreteurAgent extends Agent
 					message.setContent(sm.toJSON());
 					send(message);
 					System.out.println(sm.toJSON());
+					verif="OK";
 				}
-				else 
-				{
-					ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-					message.addReceiver(new AID("Vue", AID.ISLOCALNAME));
-					message.setContent("Erreur Format");
-					send(message);
-					System.out.println("erreur format de message");
-				}
+				ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+				message.addReceiver(new AID("Vue", AID.ISLOCALNAME));
+				message.setContent(verif);
+				send(message);
+				System.out.println("erreur format de message");
+				
 			} else 
 			{
 				block();
