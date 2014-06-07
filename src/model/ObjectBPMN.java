@@ -22,17 +22,18 @@ public abstract class ObjectBPMN {
 	protected int id;
 	protected int x, y; // position
 	protected int l, h; // largeur/hauteur
-	protected int ligne, colone; // utilis� pour le placement
+	protected int ligne, colone; // utilisï¿½ pour le placement
 	protected int prio = -1;
 	protected String label = "";
+	protected boolean optimised;
 
 	protected ArrayList<Integer> links_partant = new ArrayList<Integer>(); // liens
 																					// partant
 	protected ArrayList<Integer> links_arrivant = new ArrayList<Integer>(); // liens
 																					// arrivant
-	int max_link_partant, max_link_arrivant; // nombre de liens max d�finis
+	int max_link_partant, max_link_arrivant; // nombre de liens max dï¿½finis
 												// pour chaque type d'objet
-												// h�rit�
+												// hï¿½ritï¿½
 
 	
 	public ObjectBPMN() {
@@ -43,9 +44,19 @@ public abstract class ObjectBPMN {
 	}
 
 	
+	public boolean isOptimised() {
+		return optimised;
+	}
+
+
+	public void setOptimised(boolean optimised) {
+		this.optimised = optimised;
+	}
+
+
 
 	public ObjectBPMN(int id, int x, int y, int l, int h, int ligne,
-			int colone, int prio, String label,
+			int colone, int prio, String label, boolean optimised,
 			ArrayList<Integer> links_partant,
 			ArrayList<Integer> links_arrivant, int max_link_partant,
 			int max_link_arrivant) {
@@ -59,23 +70,28 @@ public abstract class ObjectBPMN {
 		this.colone = colone;
 		this.prio = prio;
 		this.label = label;
+		this.optimised = optimised;
 		this.links_partant = links_partant;
 		this.links_arrivant = links_arrivant;
 		this.max_link_partant = max_link_partant;
 		this.max_link_arrivant = max_link_arrivant;
 	}
 
+
+
+
+
 	@Override
 	public String toString() {
 		return label;
 	}
 
-	// link un objet � l'objet actuel en partant de l'objet actuel
+	// link un objet ï¿½ l'objet actuel en partant de l'objet actuel
 	public void linker_partant(Integer o) {
 		links_partant.add(o);
 	}
 
-	// link un objet � l'objet actuel en partant de cet objet
+	// link un objet ï¿½ l'objet actuel en partant de cet objet
 	public void linker_arrivant(Integer o) {
 		links_arrivant.add(o);
 	}
@@ -126,7 +142,7 @@ public abstract class ObjectBPMN {
 		// gestion de l'affichge des liens sortants
 		for (int i = 0; i < links_partant.size(); i++) {
 			ObjectBPMN o = wf.get_objet(links_partant.get(i));
-			if (o.getX() > (x + l)) // dessin si le deuxieme objet est �
+			if (o.getX() > (x + l)) // dessin si le deuxieme objet est ï¿½
 									// droite du premier
 			{
 				px1 = x + l;

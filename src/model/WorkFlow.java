@@ -12,6 +12,7 @@ public class WorkFlow {
 	int h = 0; // hauteur de la fenetre
 	int l = 0; // largeur de la fenetre
 	int nb_obj = 0;
+	private int waitx,waity; // zone d'attente
 	
 	public void starting()
 	{
@@ -21,6 +22,10 @@ public class WorkFlow {
 		Task t=new Task("ttt");
 		addObject(t);
 		linker(1,2);
+		addNewPool("Pool2");
+		Task t2=new Task("ttt2");
+		addObject(1,t2);
+		linker(2,3);
 		optimise();
 	}
 	public WorkFlow()
@@ -29,21 +34,38 @@ public class WorkFlow {
 	}
 	
 	// construct all items
+	
+
+	int ecart_H = 30;
 	public WorkFlow(ArrayList<Pool> pools, IdGenerator iter, int h, int l,
-			int nb_obj, int ecart_H, int ecart_L, int espace_h, int espace_l) {
+			int nb_obj, int waitx, int waity, int ecart_H, int ecart_L,
+			int espace_h, int espace_l) {
 		super();
 		Pools = pools;
 		this.iter = iter;
 		this.h = h;
 		this.l = l;
 		this.nb_obj = nb_obj;
+		this.waitx = waitx;
+		this.waity = waity;
 		this.ecart_H = ecart_H;
 		this.ecart_L = ecart_L;
 		this.espace_h = espace_h;
 		this.espace_l = espace_l;
 	}
+	public int getWaitx() {
+		return waitx;
+	}
+	public void setWaitx(int waitx) {
+		this.waitx = waitx;
+	}
+	public int getWaity() {
+		return waity;
+	}
+	public void setWaity(int waity) {
+		this.waity = waity;
+	}
 
-	int ecart_H = 30;
 	int ecart_L = 30;
 
 	public WorkFlow(int li, int hi) {
@@ -61,6 +83,7 @@ public class WorkFlow {
 	public void addNewPool(String s) {
 		Pool p = new Pool(s, 0, 0, l);
 		addPool(p);
+		p.setId(Pools.size()-1);
 	}
 
 	// Permet d'ajouter un objet dans une pool /!\ il faut obligatoirement
@@ -226,6 +249,18 @@ public class WorkFlow {
 			}
 
 		}
+		
+		// zone d'attente
+		//System.out.println("posty  " + waity);
+		
+		System.out.println("waity : "+waity);
+		g.drawRect(waitx, waity, 200, 130);
+		g.drawRect(waitx, waity, 20, 130);
+		String label="Is pending";
+		int posy = (waity)+18;
+		for (int i = 0; i < label.length(); i++) {
+			g.drawString("" + label.charAt(i), 3+waitx, posy + (i * 11));
+		}
 
 	}
 
@@ -235,6 +270,9 @@ public class WorkFlow {
 
 		ArrayList<ArrayList<ObjectBPMN>> Matrice = new ArrayList<ArrayList<ObjectBPMN>>();
 		ArrayList<ObjectBPMN> Ligne;
+		for(int i=0;i<Pools.size();i++)
+			for(int j=0;j<Pools.get(i).getObjects().size();j++)
+				Pools.get(i).getObjects().get(j).setOptimised(false);
 		if(nb_obj!=0)
 		{
 			ObjectBPMN o = get_objet(1);
@@ -290,7 +328,7 @@ public class WorkFlow {
 			int col) {
 		ArrayList<Integer> partant = o.getLinks_partant();
 		ArrayList<Integer> arrivant = o.getLinks_arrivant();
-
+		o.setOptimised(true);
 		if (o.getId() != 1) {
 			if (l == -1) {
 				pos = 0;
@@ -438,7 +476,7 @@ public class WorkFlow {
 
 		// on calcul la taille des pools
 		ArrayList<Integer> taille_pool = new ArrayList<Integer>();
-
+		
 		// recupï¿½ration de la liste des pools
 		for (int i = 0; i < mat.size(); i++) {
 			if ((taille_pool.size() - 1) < get_pool_objet(mat.get(i).get(0)
@@ -446,11 +484,11 @@ public class WorkFlow {
 				taille_pool.add(0);
 			}
 		}
-
+		h=130;
 		for (int i = 0; i < mat.size(); i++) {
 			int pool = get_pool_objet(mat.get(i).get(0).getId());
-			taille_pool.set(pool, taille_pool.get(pool) + H_ligne.get(i)
-					+ ecart_H);
+			taille_pool.set(pool, taille_pool.get(pool) + H_ligne.get(i) + ecart_H);
+			h+=taille_pool.get(pool);
 		}
 
 		// placement des objets
@@ -504,10 +542,25 @@ public class WorkFlow {
 		posy = 0;
 		for (int i = 0; i < taille_pool.size(); i++) {
 			get_pool(i).setH(taille_pool.get(i));
-			System.out.println(taille_pool.get(i));
+			//System.out.println(taille_pool.get(i));
 			get_pool(i).setY(posy);
 			posy += taille_pool.get(i);
 		}
+		
+		// placement de la zone d'attente		
+		waity=posy;
+		waitx=l-200;
+		int possx=0;
+		// recherche des objets non placés
+		for(int i=0;i<Pools.size();i++)
+			for(int j=0;j<Pools.get(i).getObjects().size();j++)
+				if(!Pools.get(i).getObjects().get(j).isOptimised())
+				{
+					Pools.get(i).getObjects().get(j).setX(waitx+35+possx);
+					Pools.get(i).getObjects().get(j).setY(waity+15);
+					possx+=Pools.get(i).getObjects().get(j).getL()+10;
+				}
+		
 
 		// choix des prioritï¿½s sur l'afffichage des liens dans une mï¿½me
 		// colone
