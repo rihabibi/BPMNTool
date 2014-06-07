@@ -368,10 +368,12 @@ public class View extends JFrame implements PropertyChangeListener {
 			if (arg0.getNewValue().equals("OK")){
 				verifLabel.setText("Message understood");
 				verifLabel.setForeground(Color.green);
+				actions.updateUI();
 			}
 			else if (arg0.getNewValue().equals("ERROR")){
 				verifLabel.setText("The command is incorrect. Please try again.");
 				verifLabel.setForeground(Color.red);
+				actions.updateUI();
 			}
 			
 		}
