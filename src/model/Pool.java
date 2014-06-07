@@ -7,16 +7,29 @@ import java.util.ArrayList;
 public class Pool {
 	private String label;
 	private int y = 0, h = 0, l = 0;
+	private int id;
 	private ArrayList<ObjectBPMN> Objects = new ArrayList<ObjectBPMN>();
 
 	
 	
-	public Pool(String label, int y, int h, int l, ArrayList<ObjectBPMN> objects) {
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Pool(String label, int y, int h, int l, int id,
+			ArrayList<ObjectBPMN> objects) {
 		super();
 		this.label = label;
 		this.y = y;
 		this.h = h;
 		this.l = l;
+		this.id = id;
 		Objects = objects;
 	}
 
@@ -39,9 +52,10 @@ public class Pool {
 	public void affiche(Graphics g) {
 		g.drawRect(0, y, l, h);
 		g.drawRect(0, y, 20, h);
-		int posy = (y + (h / 2)) - (label.length() / 2);
-		for (int i = 0; i < label.length(); i++) {
-			g.drawString("" + label.charAt(i), 3, posy + (i * 12));
+		String s=id+" "+label;
+		int posy = (y + (h / 2)) - (s.length() / 2);
+		for (int i = 0; i < s.length(); i++) {
+			g.drawString("" + s.charAt(i), 3, posy + (i * 12));
 		}
 	}
 
