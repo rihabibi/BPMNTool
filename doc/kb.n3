@@ -43,27 +43,24 @@
       
 :horizontalPool a :Object ;
    :objectName "horizontal pool" ;
-   :className "bpmn.model.object.HorizontalPool" .
-:verticalPool a :Object ;
-   :objectName  "vertical pool" ;
-   :className "bpmn.model.object.VerticalPool" .
+   :className "bpmn.model.Pool" .
 :startEvent a :Object ;
    :objectName  "start event" ;
-   :className "bpmn.model.object.StartEvent" .
+   :className "bpmn.model.Start" .
 :endEvent a :Object ;
    :objectName  "end event" ;
-   :className "bpmn.model.object.EndEvent" .
+   :className "bpmn.model.End" .
 :activity a :Object ;
    :objectName  "activity" ;
    :objectName "task" ;
-   :className "bpmn.model.object.Activity" .
+   :className "bpmn.model.Task" .
 :parallelGateway a :Object ;
    :objectName  "parallel gateway" ;
    :objectName "parallel" ;
-   :className "bpmn.model.object.parallelGateway" .
+   :className "bpmn.model.JoinGateway" .
 :exclusiveGateway a :Object ;
    :objectName  "exclusive gateway" ;
-   :className "bpmn.model.object.exclusiveGateway" .
+   :className "bpmn.model.SplitGateway" .
    
 :Create a :Action ;
    :actionName "create" ;

@@ -193,6 +193,23 @@ public class Interpretor
 		}
 		return null;
 	}
+	
+	public String getObjectId(String objectName)
+	{
+		String nsrdf = model.getNsPrefixURI(""); 
+		Property type = model.getProperty(nsrdf+"objectName"); 
+		StmtIterator iterator =  model.listStatements(new SimpleSelector((Resource)null,type,objectName));
+		while(iterator.hasNext())
+		{	
+			String subject = iterator.nextStatement().getSubject().toString();
+			String[] parts = subject.split("#");
+			if (!parts[1].equals("Separator")){
+				System.out.println(parts[1].toLowerCase());
+				return parts[1].toLowerCase();
+			}
+		}
+		return null;
+	}
 
 	private boolean lookForObject(ArrayList<String> words, int from) 
 	{
@@ -207,7 +224,8 @@ public class Interpretor
 		{
 			if (isObject(words.get(i))) 
 			{
-				currentSentenceModel.addObjectElement(words.get(i));
+				currentSentenceModel.addObjectElement(getObjectId(words.get(i)));
+				verifyObject(currentSentenceModel.getObject());
 				foundObject = true;
 			}
 			found = isSeparator(words.get(i));
@@ -221,8 +239,6 @@ public class Interpretor
 		}
 		else 
 		{
-			// Vérifie si l'objet est correct et recherche sa classe dans la kb
-			// verifyObject(currentSentenceModel.getObject());
 			return false;
 		}
 	}
@@ -266,8 +282,7 @@ public class Interpretor
 	private void lookForObjectClass(String s) 
 	{
 		String queryResult = runquery(createObjectClassQuery(s));
-		currentSentenceModel
-				.setObjectClassName(analyseQueryResult(queryResult));
+		currentSentenceModel.setObjectClassName(analyseQueryResult(queryResult));
 	}
 
 	// Exécute une requête SELECT à partir d'une chaîne
