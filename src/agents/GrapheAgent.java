@@ -92,13 +92,21 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "put":
-						wf.linker(Integer.parseInt(act.getId().get(0)),
+						wf.change_pool(Integer.parseInt(act.getId().get(0)),
 								Integer.parseInt(act.getId().get(1)));
 						maj = true;
 						break;
 					case "unconnect":
 						wf.unlinker(Integer.parseInt(act.getId().get(0)),
 								Integer.parseInt(act.getId().get(1)));
+						maj = true;
+						break;
+					case "rename_item":
+						wf.get_objet(Integer.parseInt(act.getId().get(0))).setLabel(act.getId().get(1));
+						maj = true;
+						break;
+					case "rename_pool":
+						wf.get_pool(Integer.parseInt(act.getId().get(0))).setLabel(act.getId().get(1));
 						maj = true;
 						break;
 					case "get_label":
@@ -134,6 +142,7 @@ public class GrapheAgent extends Agent {
 							e.printStackTrace();
 						}
 						break;
+					
 
 					}
 

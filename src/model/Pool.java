@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Pool {
 	private String label;
-	private int y = 0, h = 0, l = 0;
+	private int y = 0, h = 50, l = 0;
 	private int id;
 	private ArrayList<ObjectBPMN> Objects = new ArrayList<ObjectBPMN>();
 
@@ -57,6 +57,7 @@ public class Pool {
 		for (int i = 0; i < s.length(); i++) {
 			g.drawString("" + s.charAt(i), 3, posy + (i * 12));
 		}
+		System.out.println("Affiche pool n "+id +"pos y "+y +"hauteur "+h);
 	}
 
 	public void delete_obj(int id) {

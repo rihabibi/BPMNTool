@@ -23,8 +23,11 @@ public class WorkFlow {
 		addObject(t);
 		linker(1,2);
 		addNewPool("Pool2");
+		addNewPool("Pool3");
 		Task t2=new Task("ttt2");
+		Task t3=new Task("ttt.");
 		addObject(1,t2);
+		addObject(2,t3);
 		linker(2,3);
 		optimise();
 	}
@@ -254,10 +257,10 @@ public class WorkFlow {
 		//System.out.println("posty  " + waity);
 		
 		System.out.println("waity : "+waity);
-		g.drawRect(waitx, waity, 200, 130);
-		g.drawRect(waitx, waity, 20, 130);
+		g.drawRect(waitx, waity+5, l, 125);
+		g.drawRect(waitx, waity+5, 20, 125);
 		String label="Is pending";
-		int posy = (waity)+18;
+		int posy = (waity+5)+18;
 		for (int i = 0; i < label.length(); i++) {
 			g.drawString("" + label.charAt(i), 3+waitx, posy + (i * 11));
 		}
@@ -542,14 +545,21 @@ public class WorkFlow {
 		posy = 0;
 		for (int i = 0; i < taille_pool.size(); i++) {
 			get_pool(i).setH(taille_pool.get(i));
-			//System.out.println(taille_pool.get(i));
 			get_pool(i).setY(posy);
 			posy += taille_pool.get(i);
+		}
+		// affichage des pools non remplis avec la taille du texte
+		for(int i=taille_pool.size();i<Pools.size();i++)
+		{
+			int haut=get_pool(i).getLabel().length()*12;
+			get_pool(i).setH(haut);
+			get_pool(i).setY(posy);
+			posy+=haut;
 		}
 		
 		// placement de la zone d'attente		
 		waity=posy;
-		waitx=l-200;
+		waitx=0;
 		int possx=0;
 		// recherche des objets non placés
 		for(int i=0;i<Pools.size();i++)
@@ -557,7 +567,7 @@ public class WorkFlow {
 				if(!Pools.get(i).getObjects().get(j).isOptimised())
 				{
 					Pools.get(i).getObjects().get(j).setX(waitx+35+possx);
-					Pools.get(i).getObjects().get(j).setY(waity+15);
+					Pools.get(i).getObjects().get(j).setY(waity+15+5);
 					possx+=Pools.get(i).getObjects().get(j).getL()+10;
 				}
 		

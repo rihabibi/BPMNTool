@@ -3,6 +3,8 @@ package agents;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 import model.Action;
 import model.End;
 import model.JoinGateway;
@@ -36,7 +38,9 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			String object = (String) map.get("object");
 			//String objectClassName = map.get("objectClassName");
 			ArrayList<String> args = (ArrayList<String>) map.get("args");
-
+			ArrayList<String> objects = (ArrayList<String>) map.get("object");
+			if(request==null)JOptionPane.showMessageDialog(null,"La phrase proposé n'est pas valide");
+			else 
 			switch (request) {
 			case "create":
 				Action addaction = new Action();
@@ -87,18 +91,26 @@ public class GenerateBehaviour extends CyclicBehaviour {
 				connectaction.addId(args.get(1));
 				connectaction.setType("connect");;
 				sendAction(connectaction);
-				
+				System.out.println("connexion");
 				break;
 
 			case "rename":
-				/*
+				
 				Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
-				String[] param1 = args.split(",");
-				renameaction.setType(request);
-				for (int i = 0; i < 2; i++)
-					renameaction.addId(param1[i]);
-				sendAction(renameaction);
-				*/
+				if(objects.get(0)=="pool")
+				{
+					renameaction.setType("rename_pool");
+					renameaction.addId(args.get(0));
+					renameaction.addId(args.get(1));
+					sendAction(renameaction);
+				}
+				else
+				{
+					renameaction.setType("rename_item");
+					renameaction.addId(args.get(0));
+					renameaction.addId(args.get(1));
+					sendAction(renameaction);
+				}				
 				break;
 				
 			case "put":
