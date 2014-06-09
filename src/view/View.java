@@ -59,6 +59,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	private final JMenuItem oppenFile = new JMenuItem("Open");
 	private final JMenuItem save = new JMenuItem("Save");
 	private final JMenuItem saveAs = new JMenuItem("Save as");
+	private final JMenuItem exportMenu = new JMenuItem("Export in BPMN file");
 	private final JMenuItem quit = new JMenuItem("Quit");
 	private final StyleContext context = new StyleContext();
 	private final StyledDocument document = new DefaultStyledDocument(context);
@@ -76,11 +77,15 @@ public class View extends JFrame implements PropertyChangeListener {
 	private final JLabel status = new JLabel(" Status :");
 	private final JScrollPane actions = new JScrollPane(text);
 	boolean isMicroOn = false;
+	private String fileName;
+	private WorkFlow wf;
+	private Export export = new Export();
 
 	public View(ViewAgent a) {
+		fileName = null;
 		viewagent = a;
 		this.setVisible(true);
-		this.setSize(1200, 640);
+		this.setSize(1200, 650);
 		this.setResizable(false);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -127,6 +132,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		fileMenu.add(oppenFile);
 		fileMenu.add(save);
 		fileMenu.add(saveAs);
+		fileMenu.add(exportMenu);
 		fileMenu.add(quit);
 		bar.add(fileMenu);
 		bar.add(help);
@@ -162,7 +168,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		conversation.add(actions, conversationConstraints);
 
 		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
-		conversationConstraints.weightx = 0.01;
+		conversationConstraints.weightx = 0;
 		conversationConstraints.gridx = 0;
 		conversationConstraints.gridy = 1;
 		conversationConstraints.gridwidth = 1;
@@ -170,13 +176,13 @@ public class View extends JFrame implements PropertyChangeListener {
 		conversation.add(micro, conversationConstraints);
 
 		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
-		conversationConstraints.weightx = 0.01;
+		conversationConstraints.weightx = 0;
 		conversationConstraints.gridx = 0;
 		conversationConstraints.gridy = 2;
 		conversationConstraints.gridwidth = 1;
 		conversationConstraints.ipady = 1;
 		conversation.add(status, conversationConstraints);
-		
+
 		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
 		conversationConstraints.weightx = 0.01;
 		conversationConstraints.gridx = 1;
@@ -185,10 +191,9 @@ public class View extends JFrame implements PropertyChangeListener {
 		conversationConstraints.ipady = 1;
 		verifLabel.setForeground(Color.gray);
 		conversation.add(verifLabel, conversationConstraints);
-		
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 0.25;
+		constraints.weightx = 0.15;
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
@@ -198,11 +203,11 @@ public class View extends JFrame implements PropertyChangeListener {
 		pane.add(conversation, constraints);
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 0.75;
+		constraints.weightx = 0.65;
 		constraints.gridx = 1;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
-		constraints.ipady = 523;
+		constraints.ipady = 540;
 		constraints.insets = new Insets(20, 0, 0, 0);
 		title = BorderFactory.createTitledBorder(blackline, "BPMN Graph");
 		title.setTitleJustification(TitledBorder.CENTER);
@@ -222,21 +227,26 @@ public class View extends JFrame implements PropertyChangeListener {
 				choose.addChoosableFileFilter(new FileFilter() {
 
 					@Override
-					public String getDescription() {
-						return "XML contacts";
+					public boolean accept(File f) {
+						return f.getName().endsWith(".bpmnt");
 					}
 
 					@Override
-					public boolean accept(File f) {
-						return f.getName().endsWith(".xml");
+					public String getDescription() {
+						// TODO Auto-generated method stub
+						return null;
 					}
 				});
 
 				int returnVal = choose.showOpenDialog(choose);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = choose.getSelectedFile();
-					// Model.getModel().setFichier(file);
-					// refresh();
+					try {
+						wf = export.jsonImport(file);
+						refresh(wf);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -245,7 +255,9 @@ public class View extends JFrame implements PropertyChangeListener {
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Model.getModel().saveFile();
+				if (fileName == null) {
+					saveAs.doClick();
+				}
 			}
 		});
 
@@ -256,23 +268,69 @@ public class View extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 
 				choose.setAcceptAllFileFilterUsed(false);
+				choose.setDialogTitle("Save as");
 				choose.addChoosableFileFilter(new FileFilter() {
 
 					@Override
 					public String getDescription() {
-						return "XML contacts";
+						return "bpmnt file";
 					}
 
 					@Override
 					public boolean accept(File f) {
-						return f.getName().endsWith(".xml");
+						return f.getName().endsWith(".bpmnt");
 					}
 				});
 
 				int returnVal = choose.showOpenDialog(choose);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = choose.getSelectedFile();
-					// Model.getModel().saveFileAs(file);
+					if (!file.getName().endsWith(".bpmnt")) {
+						file = new File(file.getAbsolutePath() + ".bpmnt");
+					}
+					try {
+						export.jsonExport(wf, file);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+
+		// BPMN export
+		exportMenu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				choose.setAcceptAllFileFilterUsed(false);
+				choose.setDialogTitle("Select a .bpmn file");
+				choose.addChoosableFileFilter(new FileFilter() {
+
+					@Override
+					public String getDescription() {
+						return "bpmn file";
+					}
+
+					@Override
+					public boolean accept(File f) {
+						return f.getName().endsWith(".bpmn")
+								|| f.getName().endsWith(".xml");
+					}
+				});
+
+				int returnVal = choose.showOpenDialog(choose);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = choose.getSelectedFile();
+					if (!file.getName().endsWith(".bpmn")
+							&& !file.getName().endsWith(".xml")) {
+						file = new File(file.getAbsolutePath() + ".bpmn");
+					}
+					try {
+						export.bpmnExport(wf, file);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -348,6 +406,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	}
 
 	public void refresh(WorkFlow graph) {
+		wf = graph;
 		graphContent.refresh(graph);
 		repaint();
 	}
@@ -362,20 +421,19 @@ public class View extends JFrame implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		
-		if(arg0.getPropertyName().equals("message"))
-		{
-			if (arg0.getNewValue().equals("OK")){
+
+		if (arg0.getPropertyName().equals("message")) {
+			if (arg0.getNewValue().equals("OK")) {
 				verifLabel.setText("Message understood");
 				verifLabel.setForeground(Color.green);
 				actions.updateUI();
-			}
-			else if (arg0.getNewValue().equals("ERROR")){
-				verifLabel.setText("The command is incorrect. Please try again.");
+			} else if (arg0.getNewValue().equals("ERROR")) {
+				verifLabel
+						.setText("The command is incorrect. Please try again.");
 				verifLabel.setForeground(Color.red);
 				actions.updateUI();
 			}
-			
+
 		}
 	}
 
