@@ -257,6 +257,13 @@ public class View extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				if (fileName == null) {
 					saveAs.doClick();
+				} else {
+					File file = new File(fileName);
+					try {
+						export.jsonExport(wf, file);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -290,6 +297,7 @@ public class View extends JFrame implements PropertyChangeListener {
 					}
 					try {
 						export.jsonExport(wf, file);
+						fileName = file.getAbsolutePath();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
