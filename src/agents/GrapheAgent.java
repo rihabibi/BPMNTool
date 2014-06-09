@@ -42,6 +42,8 @@ public class GrapheAgent extends Agent {
 				String s = mapper2.writeValueAsString(wf);
 				message_reply.setContent(s);
 				message_reply.addReceiver(new AID("Vue", AID.ISLOCALNAME));
+				System.out.println("message:");
+				System.out.println(message_reply.getContent());
 				myAgent.send(message_reply);
 				System.out.println("send to view");
 			} catch (JsonProcessingException e) {

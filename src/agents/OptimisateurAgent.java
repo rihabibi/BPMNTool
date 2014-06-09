@@ -31,10 +31,11 @@ public class OptimisateurAgent extends Agent {
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				// récupération du workflow non opti
-				
+
 				try {
 					System.out.println("reception opti");
-					WorkFlow wf = mapper.readValue(message.getContent(),WorkFlow.class);
+					WorkFlow wf = mapper.readValue(message.getContent(),
+							WorkFlow.class);
 					wf.optimise();
 
 					// envois du résultat vers un agent d'affichage
@@ -45,6 +46,8 @@ public class OptimisateurAgent extends Agent {
 
 						String s = mapper2.writeValueAsString(wf);
 						message_reply.setContent(s);
+						System.out.println("message");
+						System.out.println(message_reply.getContent());
 						message_reply.addReceiver(new AID("Vue",
 								AID.ISLOCALNAME));
 						myAgent.send(message_reply);
@@ -63,8 +66,7 @@ public class OptimisateurAgent extends Agent {
 		}
 
 	}
-	
-	
+
 	public HashMap<String, WorkFlow> toMap(String json) {
 		HashMap<String, WorkFlow> map = new HashMap<String, WorkFlow>();
 		ObjectMapper mapper = new ObjectMapper();
