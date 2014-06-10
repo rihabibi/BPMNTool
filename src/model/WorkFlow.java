@@ -260,6 +260,7 @@ public class WorkFlow {
 		g.drawRect(waitx, waity+5, l, 125);
 		g.drawRect(waitx, waity+5, 20, 125);
 		String label="Is pending";
+		label=label.toUpperCase();
 		int posy = (waity+5)+18;
 		for (int i = 0; i < label.length(); i++) {
 			g.drawString("" + label.charAt(i), 3+waitx, posy + (i * 11));
@@ -493,6 +494,26 @@ public class WorkFlow {
 			taille_pool.set(pool, taille_pool.get(pool) + H_ligne.get(i) + ecart_H);
 			h+=taille_pool.get(pool);
 		}
+	
+		ArrayList<Integer> taille_pool_txt=new ArrayList<Integer>();
+		// maj hauteur en fonction de la taille du label
+		for(int i=0;i<taille_pool.size();i++)
+		{
+			taille_pool_txt.add(0);
+			Pool p=get_pool(i);
+			int hauteur_txt=p.getLabel().length()*12+48;
+			if(taille_pool.get(i)<hauteur_txt)
+			{
+				System.out.println("modification pour str");
+				h-=taille_pool.get(i);
+				taille_pool_txt.set(i,hauteur_txt-taille_pool.get(i));
+				taille_pool.set(i, hauteur_txt);
+				h+=taille_pool.get(i);
+				
+			}
+		}
+		
+		
 
 		// placement des objets
 		int posx = 0;
@@ -539,6 +560,7 @@ public class WorkFlow {
 
 				}
 			}
+			posy+=taille_pool_txt.get(pool); // on ajoute la taille de la pool restante (dans le cas ou une pool aurait un nom trop grand)
 		}
 
 		// placement des pools
@@ -551,7 +573,7 @@ public class WorkFlow {
 		// affichage des pools non remplis avec la taille du texte
 		for(int i=taille_pool.size();i<Pools.size();i++)
 		{
-			int haut=get_pool(i).getLabel().length()*12;
+			int haut=get_pool(i).getLabel().length()*12+42;
 			get_pool(i).setH(haut);
 			get_pool(i).setY(posy);
 			posy+=haut;

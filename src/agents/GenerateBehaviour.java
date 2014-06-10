@@ -38,7 +38,6 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			String object = (String) map.get("object");
 			//String objectClassName = map.get("objectClassName");
 			ArrayList<String> args = (ArrayList<String>) map.get("args");
-			ArrayList<String> objects = (ArrayList<String>) map.get("object");
 			if(request==null)JOptionPane.showMessageDialog(null,"La phrase proposé n'est pas valide");
 			else 
 			switch (request) {
@@ -97,10 +96,11 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			case "rename":
 				
 				Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
-				if(objects.get(0)=="pool")
+				if(object=="pool")
 				{
 					renameaction.setType("rename_pool");
 					renameaction.addId(args.get(0));
+					//System.out.println("label pool a rename "+args.get(1));
 					renameaction.addId(args.get(1));
 					sendAction(renameaction);
 				}

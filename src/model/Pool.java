@@ -53,7 +53,8 @@ public class Pool {
 		g.drawRect(0, y, l, h);
 		g.drawRect(0, y, 20, h);
 		String s=id+" "+label;
-		int posy = (y + (h / 2)) - (s.length() / 2);
+		s=s.toUpperCase();
+		int posy = (y + (h / 2)) - (s.length()*12 / 2)+12;
 		for (int i = 0; i < s.length(); i++) {
 			g.drawString("" + s.charAt(i), 3, posy + (i * 12));
 		}
