@@ -14,6 +14,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -28,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,6 +40,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
@@ -48,10 +52,71 @@ import model.WorkFlow;
 import agents.ViewAgent;
 
 public class View extends JFrame implements PropertyChangeListener {
+
+	private class FileSaver extends JFileChooser {
+		public FileSaver() {
+			super();
+			super.setDialogType(SAVE_DIALOG);
+		}
+
+		@Override
+		public File getSelectedFile() {
+			FileFilter fileFilter = super.getFileFilter();
+			File selectedFile = super.getSelectedFile();
+			if ((fileFilter instanceof FileNameExtensionFilter)
+					&& (selectedFile != null)) {
+				FileNameExtensionFilter fileFilterExtension = (FileNameExtensionFilter) fileFilter;
+				String name = selectedFile.getName();
+				boolean foundExtension = false;
+				for (String rawExtension : fileFilterExtension.getExtensions()) {
+					String extension = "." + rawExtension;
+					if (name.endsWith(extension)) {
+						foundExtension = true;
+						break;
+					}
+				}
+				if (!foundExtension) {
+					String firstExtension = "."
+							+ fileFilterExtension.getExtensions()[0];
+					selectedFile = new File(selectedFile.getParentFile(), name
+							+ firstExtension);
+				}
+			}
+
+			return selectedFile;
+		}
+
+		@Override
+		public void approveSelection() {
+			int dialogType = getDialogType();
+			if (dialogType == SAVE_DIALOG) {
+				File selectedFile = getSelectedFile();
+				if ((selectedFile != null) && selectedFile.exists()) {
+					int response = JOptionPane
+							.showConfirmDialog(
+									this,
+									"The file "
+											+ selectedFile.getName()
+											+ " already exists. Do you want to replace the existing file?",
+									"Overwrite file",
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.WARNING_MESSAGE);
+					if (response != JOptionPane.YES_OPTION) {
+						return;
+					}
+				}
+			}
+
+			super.approveSelection();
+		}
+	}
+
 	private ViewAgent viewagent;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private final JFileChooser choose = new JFileChooser();
+	private final FileSaver saver = new FileSaver();
+	private final Export export = new Export();
 	private final JMenuBar bar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
 	private final JMenu help = new JMenu("Help");
@@ -77,18 +142,42 @@ public class View extends JFrame implements PropertyChangeListener {
 	private final JLabel status = new JLabel(" Status :");
 	private final JScrollPane actions = new JScrollPane(text);
 	boolean isMicroOn = false;
-	private String fileName;
+	private String fileName = null;
 	private WorkFlow wf;
-	private Export export = new Export();
+	private boolean hasBeenModified = false;
 
 	public View(ViewAgent a) {
-		fileName = null;
 		viewagent = a;
 		this.setVisible(true);
-		this.setSize(1200, 650);
+		this.setSize(1200, 655);
 		this.setResizable(false);
 		this.setLayout(new BorderLayout());
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (hasBeenModified) {
+					int response = JOptionPane
+							.showConfirmDialog(
+									null,
+									"The workflow has been modified, do you want to save it before closing?",
+									"Closing",
+									JOptionPane.YES_NO_CANCEL_OPTION,
+									JOptionPane.WARNING_MESSAGE);
+					switch (response) {
+					case JOptionPane.YES_OPTION:
+						save.doClick();
+						break;
+					case JOptionPane.NO_OPTION:
+						break;
+					case JOptionPane.CANCEL_OPTION:
+
+						return;
+					}
+				}
+				System.exit(0);
+			}
+		});
 
 		Style style = context.getStyle(StyleContext.DEFAULT_STYLE);
 		final Style center = document.addStyle("center", style);
@@ -115,7 +204,6 @@ public class View extends JFrame implements PropertyChangeListener {
 		Dimension dimension = new Dimension(800, 500);
 		graphContent.setPreferredSize(dimension);
 		pane.setLayout(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
 
 		actions.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		text.setWrapStyleWord(true);
@@ -138,6 +226,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		bar.add(help);
 		help.setMenuLocation(30, 30);
 
+		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.weightx = 0;
 		constraints.gridx = 0;
@@ -155,8 +244,8 @@ public class View extends JFrame implements PropertyChangeListener {
 		conversationConstraints.gridwidth = 3;
 		conversationConstraints.ipady = 437;
 		historic.setEditable(false);
-		historic.setPreferredSize(new Dimension(32,30));
-		conversationContent.setSize(32, 30);
+		// historic.setPreferredSize(new Dimension(32, 30));
+		conversationContent.setSize(500, 30);
 		conversation.add(conversationContent, conversationConstraints);
 
 		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -185,16 +274,22 @@ public class View extends JFrame implements PropertyChangeListener {
 		conversation.add(status, conversationConstraints);
 
 		conversationConstraints.fill = GridBagConstraints.HORIZONTAL;
-		conversationConstraints.weightx = 0.01;
+		conversationConstraints.weightx = 0;
 		conversationConstraints.gridx = 1;
 		conversationConstraints.gridy = 2;
 		conversationConstraints.gridwidth = 1;
 		conversationConstraints.ipady = 1;
 		verifLabel.setForeground(Color.gray);
-		conversation.add(verifLabel, conversationConstraints);
+		JScrollPane verifLabelScroll = new JScrollPane(verifLabel);
+		verifLabelScroll
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		verifLabelScroll
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		verifLabelScroll.setBorder(BorderFactory.createEmptyBorder());
+		conversation.add(verifLabelScroll, conversationConstraints);
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 0.15;
+		constraints.weightx = 0.25;
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
@@ -204,7 +299,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		pane.add(conversation, constraints);
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 0.65;
+		constraints.weightx = 0.75;
 		constraints.gridx = 1;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
@@ -225,19 +320,9 @@ public class View extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 
 				choose.setAcceptAllFileFilterUsed(false);
-				choose.addChoosableFileFilter(new FileFilter() {
-
-					@Override
-					public boolean accept(File f) {
-						return f.getName().endsWith(".bpmnt");
-					}
-
-					@Override
-					public String getDescription() {
-						// TODO Auto-generated method stub
-						return null;
-					}
-				});
+				choose.resetChoosableFileFilters();
+				choose.addChoosableFileFilter(new FileNameExtensionFilter(
+						"bpmnt file", "bpmnt"));
 
 				int returnVal = choose.showOpenDialog(choose);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -262,6 +347,7 @@ public class View extends JFrame implements PropertyChangeListener {
 					File file = new File(fileName);
 					try {
 						export.jsonExport(wf, file);
+						hasBeenModified = false;
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -275,30 +361,19 @@ public class View extends JFrame implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				choose.setAcceptAllFileFilterUsed(false);
-				choose.setDialogTitle("Save as");
-				choose.addChoosableFileFilter(new FileFilter() {
+				saver.setAcceptAllFileFilterUsed(false);
+				saver.setDialogTitle("Save as");
+				saver.resetChoosableFileFilters();
+				saver.addChoosableFileFilter(new FileNameExtensionFilter(
+						"bpmnt file", "bpmnt"));
 
-					@Override
-					public String getDescription() {
-						return "bpmnt file";
-					}
-
-					@Override
-					public boolean accept(File f) {
-						return f.getName().endsWith(".bpmnt");
-					}
-				});
-
-				int returnVal = choose.showOpenDialog(choose);
+				int returnVal = saver.showSaveDialog(saver);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = choose.getSelectedFile();
-					if (!file.getName().endsWith(".bpmnt")) {
-						file = new File(file.getAbsolutePath() + ".bpmnt");
-					}
+					File file = saver.getSelectedFile();
 					try {
 						export.jsonExport(wf, file);
 						fileName = file.getAbsolutePath();
+						hasBeenModified = false;
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -312,29 +387,15 @@ public class View extends JFrame implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				choose.setAcceptAllFileFilterUsed(false);
-				choose.setDialogTitle("Select a .bpmn file");
-				choose.addChoosableFileFilter(new FileFilter() {
+				saver.setAcceptAllFileFilterUsed(false);
+				saver.setDialogTitle("Save as a .bpmn file");
+				saver.resetChoosableFileFilters();
+				saver.addChoosableFileFilter(new FileNameExtensionFilter(
+						"bpmn or xml file", "bpmn", "xml"));
 
-					@Override
-					public String getDescription() {
-						return "bpmn file";
-					}
-
-					@Override
-					public boolean accept(File f) {
-						return f.getName().endsWith(".bpmn")
-								|| f.getName().endsWith(".xml");
-					}
-				});
-
-				int returnVal = choose.showOpenDialog(choose);
+				int returnVal = saver.showSaveDialog(saver);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = choose.getSelectedFile();
-					if (!file.getName().endsWith(".bpmn")
-							&& !file.getName().endsWith(".xml")) {
-						file = new File(file.getAbsolutePath() + ".bpmn");
-					}
+					File file = saver.getSelectedFile();
 					try {
 						export.bpmnExport(wf, file);
 					} catch (Exception e1) {
@@ -409,7 +470,6 @@ public class View extends JFrame implements PropertyChangeListener {
 
 		});
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 	}
@@ -418,6 +478,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		wf = graph;
 		graphContent.refresh(graph);
 		repaint();
+		hasBeenModified = true;
 	}
 
 	public PropertyChangeSupport getPcs() {
@@ -435,12 +496,12 @@ public class View extends JFrame implements PropertyChangeListener {
 			if (arg0.getNewValue().equals("OK")) {
 				verifLabel.setText("Message understood");
 				verifLabel.setForeground(Color.green);
-				actions.updateUI();
+				// actions.updateUI();
 			} else if (arg0.getNewValue().equals("ERROR")) {
 				verifLabel
 						.setText("The command is incorrect. Please try again.");
 				verifLabel.setForeground(Color.red);
-				actions.updateUI();
+				// actions.updateUI();
 			}
 
 		}
