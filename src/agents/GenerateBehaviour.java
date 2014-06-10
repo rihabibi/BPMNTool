@@ -96,7 +96,8 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			case "rename":
 				
 				Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
-				if(object=="pool")
+				System.out.println(object);
+				if(object.equals("horizontalpool"))
 				{
 					renameaction.setType("rename_pool");
 					renameaction.addId(args.get(0));
