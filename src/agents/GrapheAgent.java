@@ -10,6 +10,8 @@ import jade.lang.acl.MessageTemplate;
 import java.io.IOException;
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 import model.Action;
 import model.ObjectBPMN;
 import model.Pool;
@@ -80,11 +82,19 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "remove":
-						for (int i = 0; i < act.getId().size(); i++) {
+						if(Integer.parseInt(act.getId().get(0))!=1)
+						{
+							for (int i = 0; i < act.getId().size(); i++) {
 							wf.retirer_objet(Integer.parseInt(act.getId()
 									.get(i)));
+							maj = true;
+							}
 						}
-						maj = true;
+						else
+						{
+							JOptionPane.showMessageDialog(null,"Supression impossible de l'objet");
+						}
+						
 						break;
 					case "connect":
 						wf.linker(Integer.parseInt(act.getId().get(0)),
@@ -102,6 +112,7 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "rename_item":
+						System.out.println("pool a rename : "+act.getId().get(1));
 						wf.get_objet(Integer.parseInt(act.getId().get(0))).setLabel(act.getId().get(1));
 						maj = true;
 						break;

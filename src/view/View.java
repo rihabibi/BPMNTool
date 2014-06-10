@@ -155,6 +155,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		conversationConstraints.gridwidth = 3;
 		conversationConstraints.ipady = 437;
 		historic.setEditable(false);
+		historic.setPreferredSize(new Dimension(32,30));
 		conversationContent.setSize(32, 30);
 		conversation.add(conversationContent, conversationConstraints);
 
