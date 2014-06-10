@@ -40,11 +40,15 @@ public class InterpreteurAgent extends Agent
 					System.out.println(sm.toJSON());
 					verif="OK";
 				}
+				else 
+				{
+
+					System.out.println("erreur format de message");
+				}
 				ACLMessage message = new ACLMessage(ACLMessage.INFORM);
 				message.addReceiver(new AID("Vue", AID.ISLOCALNAME));
 				message.setContent(verif);
 				send(message);
-				System.out.println("erreur format de message");
 				
 			} else 
 			{
