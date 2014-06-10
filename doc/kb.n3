@@ -65,6 +65,8 @@
    
 :exclusiveGateway a :Object ;
    :objectName  "exclusive gateway" ;
+   :objectName "split";
+   :objectName "split gateway";
    :className "bpmn.model.SplitGateway" .
    
 :Create a :Action ;
