@@ -193,6 +193,17 @@ public class WorkFlow {
 		else JOptionPane.showMessageDialog(null,"Supression impossible l'objet n'existe pas");
 	}
 	
+	public void retirer_pool(int id)
+	{
+		Pool p=Pools.get(id);
+		while(p.getObjects().size()!=0)
+		{
+			retirer_objet(p.getObjects().get(0).getId());
+		}
+		for(int i=id;i<Pools.size();i++)Pools.get(i).setId(i-1);
+		Pools.remove(id);
+	}
+	
 	
 	public void change_pool(int id,int pool)// change la pool de l'objet actuel
 	{
