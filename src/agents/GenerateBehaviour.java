@@ -79,8 +79,18 @@ public class GenerateBehaviour extends CyclicBehaviour {
 
 			case "remove":
 				Action removeaction = new Action();
-				removeItemWithID(request, args.get(0), removeaction);
-				sendAction(removeaction);
+				if(object.equals("horizontalpool"))
+				{
+					removeaction.setType("remove_pool");
+					removeaction.addId(args.get(0));
+					sendAction(removeaction);
+				}
+				else
+				{
+					removeaction.setType("remove_item");
+					removeaction.addId(args.get(0));
+					sendAction(removeaction);
+				}				
 				break;
 
 			case "connect":
