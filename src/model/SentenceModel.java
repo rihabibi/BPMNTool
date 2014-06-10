@@ -47,7 +47,7 @@ public class SentenceModel {
 	}
 
 	public void addObjectElement(String element) {
-		String s = object.length() == 0 ? element : " " + element;
+		String s = object.length() == 0 ? element : element;
 		object = object + s;
 	}
 

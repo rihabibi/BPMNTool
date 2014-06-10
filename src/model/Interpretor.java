@@ -167,12 +167,12 @@ public class Interpretor
 		} 
 		else 
 		{
+			lookForObject(words, 0);
 			return null;
 			/**
 			 * L'activité n'est pas trouvée on cherche les éléments objets
 			 * à partir du début jusqu'au séparateur
 			 */
-			//lookForObject(words, 0);
 		}
 		return currentSentenceModel;
 	}
@@ -224,8 +224,9 @@ public class Interpretor
 		{
 			if (isObject(words.get(i))) 
 			{
+				System.out.println(words.get(i));
 				currentSentenceModel.addObjectElement(getObjectId(words.get(i)));
-				verifyObject(currentSentenceModel.getObject());
+				verifyObject(words.get(i));
 				foundObject = true;
 			}
 			found = isSeparator(words.get(i));
@@ -334,6 +335,7 @@ public class Interpretor
 		sb.append("  ?object a :Object ; ");
 		sb.append("     :objectName \"" + objectName + "\" ; ");
 		sb.append("     :className ?clname . }");
+		System.out.println(sb.toString());
 		return sb.toString();
 	}
 }

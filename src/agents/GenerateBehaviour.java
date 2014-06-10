@@ -38,18 +38,18 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			String object = (String) map.get("object");
 			//String objectClassName = map.get("objectClassName");
 			ArrayList<String> args = (ArrayList<String>) map.get("args");
-			if(request==null)JOptionPane.showMessageDialog(null,"La phrase proposé n'est pas valide");
+			if(request==null)JOptionPane.showMessageDialog(null,"La phrase proposï¿½ n'est pas valide");
 			else 
 			switch (request) {
 			case "create":
 				Action addaction = new Action();
 				switch (object) {
-				case "start event":
+				case "startevent":
 					GenerateStartEvent(request, args.get(0), addaction);
 					sendAction(addaction);
 					break;
 
-				case "end event":
+				case "endevent":
 					GenerateEndEvent(request, args.get(0), addaction);
 					sendAction(addaction);
 					break;
@@ -59,17 +59,17 @@ public class GenerateBehaviour extends CyclicBehaviour {
 					sendAction(addaction);
 					break;
 
-				case "pool":
+				case "horizontalpool":
 					GeneratePool("pool",args.get(0), addaction);
 					sendAction(addaction);
 					break;
 
-				case "parallel gateway":
+				case "parallelgateway":
 					GeneratePGateway(request, null, addaction);
 					sendAction(addaction);
 					break;
 
-				case "exclusive gateway":
+				case "exclusivegateway":
 					GenerateEGateway(request, null, addaction);
 					sendAction(addaction);
 					break;
@@ -117,6 +117,7 @@ public class GenerateBehaviour extends CyclicBehaviour {
 				Action putaction = new Action();
 				putaction.addId(args.get(0));
 				putaction.addId(args.get(1));
+				sendAction(putaction);
 				break;
 			}// f switch(request)
 		}// f if(message != null)

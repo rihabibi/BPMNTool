@@ -42,22 +42,27 @@
    rdfs:range xsd:string .
       
 :horizontalPool a :Object ;
-   :objectName "horizontal pool" ;
+   :objectName "pool";
    :className "bpmn.model.Pool" .
+   
 :startEvent a :Object ;
-   :objectName  "start event" ;
+   :objectName "start" ;
    :className "bpmn.model.Start" .
+   
 :endEvent a :Object ;
-   :objectName  "end event" ;
+   :objectName "end" ;
    :className "bpmn.model.End" .
+   
 :activity a :Object ;
    :objectName  "activity" ;
    :objectName "task" ;
    :className "bpmn.model.Task" .
+   
 :parallelGateway a :Object ;
    :objectName  "parallel gateway" ;
    :objectName "parallel" ;
    :className "bpmn.model.JoinGateway" .
+   
 :exclusiveGateway a :Object ;
    :objectName  "exclusive gateway" ;
    :className "bpmn.model.SplitGateway" .
