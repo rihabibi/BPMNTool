@@ -112,7 +112,7 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "rename_item":
-						System.out.println("pool a rename : "+act.getId().get(1));
+						//System.out.println("pool a rename : "+act.getId().get(1));
 						wf.get_objet(Integer.parseInt(act.getId().get(0))).setLabel(act.getId().get(1));
 						maj = true;
 						break;

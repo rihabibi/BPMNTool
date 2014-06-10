@@ -97,7 +97,7 @@ public class WorkFlow {
 		nb_obj++;
 	}
 
-	// ajoute dans la pool 0 par défaut
+	// ajoute dans la pool 0 par dï¿½faut
 	public void addObject(ObjectBPMN o) {
 		o.setId(iter.news_id());
 		Pools.get(0).AddObject(o);
@@ -204,11 +204,11 @@ public class WorkFlow {
 			{
 				Pool p2=get_pool(get_pool_objet(id));
 				p2.getObjects().remove(o);
-				p.AddObject(o);
+				p.AddObject(o); System.out.println("ok change pool");
 			}
-			else JOptionPane.showMessageDialog(null,"L'objet demandé n'existe pas.");
+			else JOptionPane.showMessageDialog(null,"L'objet demandï¿½ n'existe pas.");
 		}
-		else JOptionPane.showMessageDialog(null,"La pool demandé n'existe pas.");
+		else JOptionPane.showMessageDialog(null,"La pool demandï¿½ n'existe pas.");
 	}
 
 	// crï¿½ï¿½ un lien entre deux objets
@@ -224,7 +224,7 @@ public class WorkFlow {
 		} else {
 			// error
 			System.out.println("Problem de linkage");
-			JOptionPane.showMessageDialog(null,"Linkage impossible, l'un des objets n'existe pas ou ne peut est lier à plus d'objet");
+			JOptionPane.showMessageDialog(null,"Linkage impossible, l'un des objets n'existe pas ou ne peut est lier ï¿½ plus d'objet");
 		}
 	}
 
@@ -583,7 +583,7 @@ public class WorkFlow {
 		waity=posy;
 		waitx=0;
 		int possx=0;
-		// recherche des objets non placés
+		// recherche des objets non placï¿½s
 		for(int i=0;i<Pools.size();i++)
 			for(int j=0;j<Pools.get(i).getObjects().size();j++)
 				if(!Pools.get(i).getObjects().get(j).isOptimised())

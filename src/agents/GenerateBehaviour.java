@@ -101,7 +101,7 @@ public class GenerateBehaviour extends CyclicBehaviour {
 				{
 					renameaction.setType("rename_pool");
 					renameaction.addId(args.get(0));
-					//System.out.println("label pool a rename "+args.get(1));
+					System.out.println("label pool a rename "+args.get(1));
 					renameaction.addId(args.get(1));
 					sendAction(renameaction);
 				}
@@ -116,6 +116,7 @@ public class GenerateBehaviour extends CyclicBehaviour {
 				
 			case "put":
 				Action putaction = new Action();
+				putaction.setType("put");
 				putaction.addId(args.get(0));
 				putaction.addId(args.get(1));
 				sendAction(putaction);
