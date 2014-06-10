@@ -87,12 +87,12 @@ public class GrapheAgent extends Agent {
 							for (int i = 0; i < act.getId().size(); i++) {
 							wf.retirer_objet(Integer.parseInt(act.getId()
 									.get(i)));
+							maj = true;
+							}
 						}
 						else
 						{
 							JOptionPane.showMessageDialog(null,"Supression impossible de l'objet");
-						}
-						maj = true;
 						}
 						
 						break;
