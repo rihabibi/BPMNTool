@@ -220,9 +220,9 @@ public class Interpretor
 		boolean found = false;
 		boolean foundObject = false;
 		int i = from;
-		while (!found && (i < words.size())) 
+		while (!found && i < words.size()) 
 		{
-			if (isObject(words.get(i))) 
+			if (isObject(words.get(i)) &&!foundObject) 
 			{
 				System.out.println(words.get(i));
 				currentSentenceModel.addObjectElement(getObjectId(words.get(i)));
@@ -238,10 +238,12 @@ public class Interpretor
 			lookForArgs(words, i);
 			return true;
 		}
-		else 
+		else if ( foundObject && (words.get(i-1).equals("parallel") || words.get(i-1).equals("split") || words.get(i-1).equals("exlcusive") || words.get(i-1).equals("gateway")))
 		{
-			return false;
+			return true;
 		}
+		else
+			return false;
 	}
 
 	/**

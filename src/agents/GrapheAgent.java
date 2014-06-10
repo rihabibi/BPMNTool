@@ -81,7 +81,7 @@ public class GrapheAgent extends Agent {
 						wf.addObject(act.getObjects().get(0));
 						maj = true;
 						break;
-					case "remove":
+					case "remove_item":
 						if(Integer.parseInt(act.getId().get(0))!=1)
 						{
 							for (int i = 0; i < act.getId().size(); i++) {
@@ -92,10 +92,24 @@ public class GrapheAgent extends Agent {
 						}
 						else
 						{
-							JOptionPane.showMessageDialog(null,"Supression impossible de l'objet");
+							JOptionPane.showMessageDialog(null,"Supression impossible de l'objet initial");
 						}
 						
 						break;
+					case "remove_pool":
+						if(Integer.parseInt(act.getId().get(0))!=0)
+						{
+							
+							wf.retirer_pool(Integer.parseInt(act.getId().get(0)));
+							maj = true;
+						}
+						else
+						{
+							JOptionPane.showMessageDialog(null,"Supression impossible du pool initial");
+						}
+						
+						break;	
+					
 					case "connect":
 						wf.linker(Integer.parseInt(act.getId().get(0)),
 								Integer.parseInt(act.getId().get(1)));
