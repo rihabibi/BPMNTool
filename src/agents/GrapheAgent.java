@@ -17,8 +17,10 @@ import model.ObjectBPMN;
 import model.Pool;
 import model.WorkFlow;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GrapheAgent extends Agent {
@@ -82,34 +84,31 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "remove_item":
-						if(Integer.parseInt(act.getId().get(0))!=1)
-						{
+						if (Integer.parseInt(act.getId().get(0)) != 1) {
 							for (int i = 0; i < act.getId().size(); i++) {
-							wf.retirer_objet(Integer.parseInt(act.getId()
-									.get(i)));
-							maj = true;
+								wf.retirer_objet(Integer.parseInt(act.getId()
+										.get(i)));
+								maj = true;
 							}
+						} else {
+							JOptionPane.showMessageDialog(null,
+									"Supression impossible de l'objet initial");
 						}
-						else
-						{
-							JOptionPane.showMessageDialog(null,"Supression impossible de l'objet initial");
-						}
-						
+
 						break;
 					case "remove_pool":
-						if(Integer.parseInt(act.getId().get(0))!=0)
-						{
-							
-							wf.retirer_pool(Integer.parseInt(act.getId().get(0)));
+						if (Integer.parseInt(act.getId().get(0)) != 0) {
+
+							wf.retirer_pool(Integer
+									.parseInt(act.getId().get(0)));
 							maj = true;
+						} else {
+							JOptionPane.showMessageDialog(null,
+									"Supression impossible du pool initial");
 						}
-						else
-						{
-							JOptionPane.showMessageDialog(null,"Supression impossible du pool initial");
-						}
-						
-						break;	
-					
+
+						break;
+
 					case "connect":
 						wf.linker(Integer.parseInt(act.getId().get(0)),
 								Integer.parseInt(act.getId().get(1)));
@@ -126,12 +125,14 @@ public class GrapheAgent extends Agent {
 						maj = true;
 						break;
 					case "rename_item":
-						//System.out.println("pool a rename : "+act.getId().get(1));
-						wf.get_objet(Integer.parseInt(act.getId().get(0))).setLabel(act.getId().get(1));
+						// System.out.println("pool a rename : "+act.getId().get(1));
+						wf.get_objet(Integer.parseInt(act.getId().get(0)))
+								.setLabel(act.getId().get(1));
 						maj = true;
 						break;
 					case "rename_pool":
-						wf.get_pool(Integer.parseInt(act.getId().get(0))).setLabel(act.getId().get(1));
+						wf.get_pool(Integer.parseInt(act.getId().get(0)))
+								.setLabel(act.getId().get(1));
 						maj = true;
 						break;
 					case "get_label":
@@ -167,7 +168,6 @@ public class GrapheAgent extends Agent {
 							e.printStackTrace();
 						}
 						break;
-					
 
 					}
 
@@ -196,6 +196,31 @@ public class GrapheAgent extends Agent {
 
 			}
 
+		}
+
+	}
+
+	private class GetModifyGraph extends CyclicBehaviour {
+
+		@Override
+		public void action() {
+			ACLMessage message = myAgent.receive(MessageTemplate
+					.MatchPerformative(ACLMessage.INFORM));
+			if (message != null) {
+				System.out.println("reception graph");
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+				try {
+					wf = mapper.readValue(message.getContent(), WorkFlow.class);
+					System.out.println("workflow modified !");
+				} catch (JsonParseException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 	}

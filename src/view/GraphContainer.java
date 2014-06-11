@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -18,5 +19,17 @@ public class GraphContainer extends JPanel {
 		if (work != null) {
 			work.affiche(g);
 		}
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		Dimension dimension;
+		if (work != null) {
+			dimension = new Dimension(work.getL(), work.getH());
+		} else {
+			dimension = new Dimension(480, 500);
+		}
+		System.out.println(dimension);
+		return dimension;
 	}
 }

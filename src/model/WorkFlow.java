@@ -12,34 +12,33 @@ public class WorkFlow {
 	int h = 0; // hauteur de la fenetre
 	int l = 0; // largeur de la fenetre
 	int nb_obj = 0;
-	private int waitx,waity; // zone d'attente
-	
-	public void starting()
-	{
+	private int waitx, waity; // zone d'attente
+
+	public void starting() {
 		addNewPool("Pool");
-		Start st1=new Start("Start");
+		Start st1 = new Start("Start");
 		addObject(st1);
-		Task t=new Task("ttt");
+		Task t = new Task("ttt");
 		addObject(t);
-		linker(1,2);
+		linker(1, 2);
 		addNewPool("Pool2");
 		addNewPool("Pool3");
-		Task t2=new Task("ttt2");
-		Task t3=new Task("ttt.");
-		addObject(1,t2);
-		addObject(2,t3);
-		linker(2,3);
+		Task t2 = new Task("ttt2");
+		Task t3 = new Task("ttt.");
+		addObject(1, t2);
+		addObject(2, t3);
+		linker(2, 3);
 		optimise();
 	}
-	public WorkFlow()
-	{
-		
+
+	public WorkFlow() {
+
 	}
-	
+
 	// construct all items
-	
 
 	int ecart_H = 30;
+
 	public WorkFlow(ArrayList<Pool> pools, IdGenerator iter, int h, int l,
 			int nb_obj, int waitx, int waity, int ecart_H, int ecart_L,
 			int espace_h, int espace_l) {
@@ -56,15 +55,19 @@ public class WorkFlow {
 		this.espace_h = espace_h;
 		this.espace_l = espace_l;
 	}
+
 	public int getWaitx() {
 		return waitx;
 	}
+
 	public void setWaitx(int waitx) {
 		this.waitx = waitx;
 	}
+
 	public int getWaity() {
 		return waity;
 	}
+
 	public void setWaity(int waity) {
 		this.waity = waity;
 	}
@@ -86,7 +89,7 @@ public class WorkFlow {
 	public void addNewPool(String s) {
 		Pool p = new Pool(s, 0, 0, l);
 		addPool(p);
-		p.setId(Pools.size()-1);
+		p.setId(Pools.size() - 1);
 	}
 
 	// Permet d'ajouter un objet dans une pool /!\ il faut obligatoirement
@@ -175,51 +178,54 @@ public class WorkFlow {
 
 	public void retirer_objet(int id)// retire un objet selon son id
 	{
-		if(get_objet(id)!=null)
-		{
+		if (get_objet(id) != null) {
 			Pool p = get_pool(get_pool_objet(id));
-		ObjectBPMN o = get_objet(id);
-		ArrayList<Integer> lst = o.getLinks_arrivant();
-		for (int i = 0; i < lst.size(); i++) {
-			unlinker(id, lst.get(i));
-		}
+			ObjectBPMN o = get_objet(id);
+			ArrayList<Integer> lst = o.getLinks_arrivant();
+			for (int i = 0; i < lst.size(); i++) {
+				unlinker(id, lst.get(i));
+			}
 
-		ArrayList<Integer> lst2 = o.getLinks_partant();
-		for (int i = 0; i < lst2.size(); i++) {
-			unlinker(id, lst2.get(i));
+			ArrayList<Integer> lst2 = o.getLinks_partant();
+			for (int i = 0; i < lst2.size(); i++) {
+				unlinker(id, lst2.get(i));
+			}
+			p.delete_obj(id);
+		} else {
+			JOptionPane.showMessageDialog(null,
+					"Supression impossible l'objet n'existe pas");
 		}
-		p.delete_obj(id);
-		}
-		else JOptionPane.showMessageDialog(null,"Supression impossible l'objet n'existe pas");
 	}
-	
-	public void retirer_pool(int id)
-	{
-		Pool p=Pools.get(id);
-		while(p.getObjects().size()!=0)
-		{
+
+	public void retirer_pool(int id) {
+		Pool p = Pools.get(id);
+		while (p.getObjects().size() != 0) {
 			retirer_objet(p.getObjects().get(0).getId());
 		}
-		for(int i=id;i<Pools.size();i++)Pools.get(i).setId(i-1);
+		for (int i = id; i < Pools.size(); i++) {
+			Pools.get(i).setId(i - 1);
+		}
 		Pools.remove(id);
 	}
-	
-	
-	public void change_pool(int id,int pool)// change la pool de l'objet actuel
+
+	public void change_pool(int id, int pool)// change la pool de l'objet actuel
 	{
-		Pool p=get_pool(pool);
-		if(p!=null)
-		{
-			ObjectBPMN o=get_objet(id);
-			if(o!=null)
-			{
-				Pool p2=get_pool(get_pool_objet(id));
+		Pool p = get_pool(pool);
+		if (p != null) {
+			ObjectBPMN o = get_objet(id);
+			if (o != null) {
+				Pool p2 = get_pool(get_pool_objet(id));
 				p2.getObjects().remove(o);
-				p.AddObject(o); System.out.println("ok change pool");
+				p.AddObject(o);
+				System.out.println("ok change pool");
+			} else {
+				JOptionPane.showMessageDialog(null,
+						"L'objet demand� n'existe pas.");
 			}
-			else JOptionPane.showMessageDialog(null,"L'objet demand� n'existe pas.");
+		} else {
+			JOptionPane.showMessageDialog(null,
+					"La pool demand� n'existe pas.");
 		}
-		else JOptionPane.showMessageDialog(null,"La pool demand� n'existe pas.");
 	}
 
 	// cr�� un lien entre deux objets
@@ -235,7 +241,10 @@ public class WorkFlow {
 		} else {
 			// error
 			System.out.println("Problem de linkage");
-			JOptionPane.showMessageDialog(null,"Linkage impossible, l'un des objets n'existe pas ou ne peut est lier � plus d'objet");
+			JOptionPane
+					.showMessageDialog(
+							null,
+							"Linkage impossible, l'un des objets n'existe pas ou ne peut est lier � plus d'objet");
 		}
 	}
 
@@ -254,27 +263,29 @@ public class WorkFlow {
 		g.setColor(Color.black);
 		for (int i = 0; i < Pools.size(); i++) {
 			Pools.get(i).affiche(g);
+		}
+		for (int i = 0; i < Pools.size(); i++) {
 			ArrayList<ObjectBPMN> Objects = Pools.get(i).getObjects();
 			for (int j = 0; j < Objects.size(); j++) {
-				Objects.get(j).affiche_link(g,this);
+				Objects.get(j).affiche_link(g, this);
 			}
 			for (int j = 0; j < Objects.size(); j++) {
 				Objects.get(j).affiche(g);
 			}
 
 		}
-		
+
 		// zone d'attente
-		//System.out.println("posty  " + waity);
-		
-		System.out.println("waity : "+waity);
-		g.drawRect(waitx, waity+5, l, 125);
-		g.drawRect(waitx, waity+5, 20, 125);
-		String label="Is pending";
-		label=label.toUpperCase();
-		int posy = (waity+5)+18;
+		// System.out.println("posty  " + waity);
+
+		System.out.println("waity : " + waity);
+		g.drawRect(waitx, waity + 5, l, 125);
+		g.drawRect(waitx, waity + 5, 20, 125);
+		String label = "Is pending";
+		label = label.toUpperCase();
+		int posy = (waity + 5) + 18;
 		for (int i = 0; i < label.length(); i++) {
-			g.drawString("" + label.charAt(i), 3+waitx, posy + (i * 11));
+			g.drawString("" + label.charAt(i), 3 + waitx, posy + (i * 11));
 		}
 
 	}
@@ -285,20 +296,21 @@ public class WorkFlow {
 
 		ArrayList<ArrayList<ObjectBPMN>> Matrice = new ArrayList<ArrayList<ObjectBPMN>>();
 		ArrayList<ObjectBPMN> Ligne;
-		for(int i=0;i<Pools.size();i++)
-			for(int j=0;j<Pools.get(i).getObjects().size();j++)
+		for (int i = 0; i < Pools.size(); i++) {
+			for (int j = 0; j < Pools.get(i).getObjects().size(); j++) {
 				Pools.get(i).getObjects().get(j).setOptimised(false);
-		if(nb_obj!=0)
-		{
-			ObjectBPMN o = get_objet(1);
-		
-		Ligne = new ArrayList<ObjectBPMN>();
-		Ligne.add(o);
-		Matrice.add(Ligne);
-		
-		Matrice = opt(Matrice, o, Matrice.size() - 1, 0, 0);
+			}
 		}
-		
+		if (nb_obj != 0) {
+			ObjectBPMN o = get_objet(1);
+
+			Ligne = new ArrayList<ObjectBPMN>();
+			Ligne.add(o);
+			Matrice.add(Ligne);
+
+			Matrice = opt(Matrice, o, Matrice.size() - 1, 0, 0);
+		}
+
 		place(Matrice);
 
 		// System.out.println(Matrice);
@@ -355,7 +367,7 @@ public class WorkFlow {
 				o.setLigne(l);
 			} else {
 				if (o.getId() == 9) {
-					
+
 				}
 				mat.get(l).add(pos, o);
 				o.setColone(col);
@@ -387,7 +399,8 @@ public class WorkFlow {
 				if ((partant.get(j) != null)
 						&& ((j == 0) && (get_pool_objet(o.getId()) == get_pool_objet(partant
 								.get(j))))) {
-					mat = opt(mat, get_objet(partant.get(j)), l, pos + 1, col + 1);
+					mat = opt(mat, get_objet(partant.get(j)), l, pos + 1,
+							col + 1);
 				} else {
 					mat = opt(mat, get_objet(partant.get(j)), -1, 0, col);
 				}
@@ -491,7 +504,7 @@ public class WorkFlow {
 
 		// on calcul la taille des pools
 		ArrayList<Integer> taille_pool = new ArrayList<Integer>();
-		
+
 		// recup�ration de la liste des pools
 		for (int i = 0; i < mat.size(); i++) {
 			if ((taille_pool.size() - 1) < get_pool_objet(mat.get(i).get(0)
@@ -499,32 +512,29 @@ public class WorkFlow {
 				taille_pool.add(0);
 			}
 		}
-		h=130;
+		h = 130;
 		for (int i = 0; i < mat.size(); i++) {
 			int pool = get_pool_objet(mat.get(i).get(0).getId());
-			taille_pool.set(pool, taille_pool.get(pool) + H_ligne.get(i) + ecart_H);
-			h+=taille_pool.get(pool);
+			taille_pool.set(pool, taille_pool.get(pool) + H_ligne.get(i)
+					+ ecart_H);
+			h += taille_pool.get(pool);
 		}
-	
-		ArrayList<Integer> taille_pool_txt=new ArrayList<Integer>();
+
+		ArrayList<Integer> taille_pool_txt = new ArrayList<Integer>();
 		// maj hauteur en fonction de la taille du label
-		for(int i=0;i<taille_pool.size();i++)
-		{
+		for (int i = 0; i < taille_pool.size(); i++) {
 			taille_pool_txt.add(0);
-			Pool p=get_pool(i);
-			int hauteur_txt=p.getLabel().length()*12+48;
-			if(taille_pool.get(i)<hauteur_txt)
-			{
+			Pool p = get_pool(i);
+			int hauteur_txt = (p.getLabel().length() * 12) + 48;
+			if (taille_pool.get(i) < hauteur_txt) {
 				System.out.println("modification pour str");
-				h-=taille_pool.get(i);
-				taille_pool_txt.set(i,hauteur_txt-taille_pool.get(i));
+				h -= taille_pool.get(i);
+				taille_pool_txt.set(i, hauteur_txt - taille_pool.get(i));
 				taille_pool.set(i, hauteur_txt);
-				h+=taille_pool.get(i);
-				
+				h += taille_pool.get(i);
+
 			}
 		}
-		
-		
 
 		// placement des objets
 		int posx = 0;
@@ -571,8 +581,31 @@ public class WorkFlow {
 
 				}
 			}
-			posy+=taille_pool_txt.get(pool); // on ajoute la taille de la pool restante (dans le cas ou une pool aurait un nom trop grand)
+			posy += taille_pool_txt.get(pool); // on ajoute la taille de la pool
+												// restante (dans le cas ou une
+												// pool aurait un nom trop
+												// grand)
 		}
+
+		// calcul de la largeur max et hauteur max
+		l = 0;
+		for (int i = 0; i < Col_taille.size(); i++) {
+			l += Col_taille.get(i) + ecart_L;
+		}
+		l += 20;
+		System.out.println("nb col : " + Col_taille.size() + "largeur : " + l);
+		for (int i = 0; i < Pools.size(); i++) {
+			Pools.get(i).setL(l);
+		}
+		h = 0;
+		for (int i = 0; i < taille_pool.size(); i++) {
+			h += taille_pool.get(i);
+		}
+		for (int i = taille_pool.size(); i < Pools.size(); i++) {
+			int haut = (get_pool(i).getLabel().length() * 12) + 42;
+			h += haut;
+		}
+		h += 130; // pour la zone d'attente
 
 		// placement des pools
 		posy = 0;
@@ -582,28 +615,27 @@ public class WorkFlow {
 			posy += taille_pool.get(i);
 		}
 		// affichage des pools non remplis avec la taille du texte
-		for(int i=taille_pool.size();i<Pools.size();i++)
-		{
-			int haut=get_pool(i).getLabel().length()*12+42;
+		for (int i = taille_pool.size(); i < Pools.size(); i++) {
+			int haut = (get_pool(i).getLabel().length() * 12) + 42;
 			get_pool(i).setH(haut);
 			get_pool(i).setY(posy);
-			posy+=haut;
+			posy += haut;
 		}
-		
-		// placement de la zone d'attente		
-		waity=posy;
-		waitx=0;
-		int possx=0;
+
+		// placement de la zone d'attente
+		waity = posy;
+		waitx = 0;
+		int possx = 0;
 		// recherche des objets non plac�s
-		for(int i=0;i<Pools.size();i++)
-			for(int j=0;j<Pools.get(i).getObjects().size();j++)
-				if(!Pools.get(i).getObjects().get(j).isOptimised())
-				{
-					Pools.get(i).getObjects().get(j).setX(waitx+35+possx);
-					Pools.get(i).getObjects().get(j).setY(waity+15+5);
-					possx+=Pools.get(i).getObjects().get(j).getL()+10;
+		for (int i = 0; i < Pools.size(); i++) {
+			for (int j = 0; j < Pools.get(i).getObjects().size(); j++) {
+				if (!Pools.get(i).getObjects().get(j).isOptimised()) {
+					Pools.get(i).getObjects().get(j).setX(waitx + 35 + possx);
+					Pools.get(i).getObjects().get(j).setY(waity + 15 + 5);
+					possx += Pools.get(i).getObjects().get(j).getL() + 10;
 				}
-		
+			}
+		}
 
 		// choix des priorit�s sur l'afffichage des liens dans une m�me
 		// colone
@@ -701,6 +733,4 @@ public class WorkFlow {
 		this.espace_l = espace_l;
 	}
 
-	
-	
 }

@@ -1,18 +1,17 @@
 package model;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
-
 
 public class Pool {
 	private String label;
 	private int y = 0, h = 50, l = 0;
 	private int id;
+	private int[][] couleurs = { { 245, 219, 171 }, { 212, 245, 171 },
+			{ 206, 242, 245 }, { 245, 206, 206 } };
+	private int couleur = 0;
 	private ArrayList<ObjectBPMN> Objects = new ArrayList<ObjectBPMN>();
-
-	
-	
-	
 
 	public int getId() {
 		return id;
@@ -20,10 +19,11 @@ public class Pool {
 
 	public void setId(int id) {
 		this.id = id;
+		couleur = id % 4;
 	}
 
 	public Pool(String label, int y, int h, int l, int id,
-			ArrayList<ObjectBPMN> objects) {
+			ArrayList<ObjectBPMN> objects, int coul) {
 		super();
 		this.label = label;
 		this.y = y;
@@ -31,18 +31,19 @@ public class Pool {
 		this.l = l;
 		this.id = id;
 		Objects = objects;
+		couleur = id % 4;
 	}
 
-	public Pool()
-	{
-		
+	public Pool() {
+
 	}
-	
+
 	public Pool(String lbl, int yi, int hi, int li) {
 		setLabel(lbl);
 		y = yi;
 		h = hi;
 		l = li;
+		couleur = id % 4;
 	}
 
 	public void AddObject(ObjectBPMN o) {
@@ -50,15 +51,21 @@ public class Pool {
 	}
 
 	public void affiche(Graphics g) {
+
+		g.setColor(new Color(couleurs[couleur][0], couleurs[couleur][1],
+				couleurs[couleur][2]));
+		g.fillRect(0, y, l, h);
+		g.setColor(Color.BLACK);
 		g.drawRect(0, y, l, h);
 		g.drawRect(0, y, 20, h);
-		String s=id+" "+label;
-		s=s.toUpperCase();
-		int posy = (y + (h / 2)) - (s.length()*12 / 2)+12;
+		String s = id + " " + label;
+		s = s.toUpperCase();
+		int posy = ((y + (h / 2)) - ((s.length() * 12) / 2)) + 12;
 		for (int i = 0; i < s.length(); i++) {
 			g.drawString("" + s.charAt(i), 3, posy + (i * 12));
 		}
-		System.out.println("Affiche pool n "+id +"pos y "+y +"hauteur "+h);
+		System.out.println("Affiche pool n " + id + "pos y " + y + "hauteur "
+				+ h);
 	}
 
 	public void delete_obj(int id) {
@@ -109,6 +116,22 @@ public class Pool {
 
 	public void setL(int l) {
 		this.l = l;
+	}
+
+	public int[][] getCouleurs() {
+		return couleurs;
+	}
+
+	public void setCouleurs(int[][] couleurs) {
+		this.couleurs = couleurs;
+	}
+
+	public int getCouleur() {
+		return couleur;
+	}
+
+	public void setCouleur(int couleur) {
+		this.couleur = couleur;
 	}
 
 }
