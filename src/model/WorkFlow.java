@@ -26,9 +26,30 @@ public class WorkFlow {
 		addNewPool("Pool3");
 		Task t2=new Task("ttt2");
 		Task t3=new Task("ttt.");
+		Task tvar;
 		addObject(1,t2);
-		addObject(2,t3);
+		//addObject(2,t3);
+		tvar=new Task("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1,tvar);
+		tvar=new Task("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1,tvar);
+		tvar=new Task("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1,tvar);
+		tvar=new Task("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1,tvar);
+		tvar=new Task("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1,tvar);
+		tvar=new Task("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1,tvar);
 		linker(2,3);
+		linker(3,4);
+		linker(4,5);
+		linker(5,6);
+		linker(6,7);
+		linker(7,8);
+		linker(8,9);
+		
+		//linker(2,3);
 		optimise();
 	}
 	public WorkFlow()
@@ -524,8 +545,6 @@ public class WorkFlow {
 			}
 		}
 		
-		
-
 		// placement des objets
 		int posx = 0;
 		int posy = ecart_H;
@@ -573,6 +592,18 @@ public class WorkFlow {
 			}
 			posy+=taille_pool_txt.get(pool); // on ajoute la taille de la pool restante (dans le cas ou une pool aurait un nom trop grand)
 		}
+		
+		// calcul de la largeur max et hauteur max
+				l=0;
+				for(int i=0;i<Col_taille.size();i++)
+					l+=Col_taille.get(i)+ecart_L;
+				l+=60;
+				System.out.println("nb col : "+ Col_taille.size() + "largeur : "+l);
+				for(int i=0;i<Pools.size();i++) Pools.get(i).setL(l);
+				h=0;
+				for (int i = 0; i < taille_pool.size(); i++) {h+=taille_pool.get(i);}
+				for(int i=taille_pool.size();i<Pools.size();i++){int haut=get_pool(i).getLabel().length()*12+42; h+=haut;}
+				h+=130; // pour la zone d'attente
 
 		// placement des pools
 		posy = 0;

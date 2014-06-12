@@ -198,8 +198,8 @@ public class View extends JFrame implements PropertyChangeListener {
 		TitledBorder title;
 		title = BorderFactory.createTitledBorder(blackline, "Assitant");
 		title.setTitleJustification(TitledBorder.CENTER);
-
-		graph.add(graphContent);
+		JScrollPane jsp= new JScrollPane(graphContent);
+		graph.add(jsp);
 		graphContent.setBackground(new Color(255, 255, 255));
 		Dimension dimension = new Dimension(800, 500);
 		graphContent.setPreferredSize(dimension);
@@ -474,9 +474,9 @@ public class View extends JFrame implements PropertyChangeListener {
 
 	}
 
-	public void refresh(WorkFlow graph) {
-		wf = graph;
-		graphContent.refresh(graph);
+	public void refresh(WorkFlow g) {
+		wf = g;
+		graphContent.refresh(g);
 		repaint();
 		hasBeenModified = true;
 	}

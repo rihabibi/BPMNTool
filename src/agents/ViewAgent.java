@@ -68,6 +68,7 @@ public class ViewAgent extends GuiAgent
 				try {
 					graph = mapper.readValue(message.getContent(),
 							WorkFlow.class);
+					System.out.println("H : "+graph.getH()+"  L: "+graph.getL());
 				} catch (JsonParseException e) {
 					e.printStackTrace();
 				} catch (JsonMappingException e) {
