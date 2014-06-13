@@ -7,17 +7,12 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME,
-include=JsonTypeInfo.As.PROPERTY,
-property="type")
-@JsonSubTypes({
-@JsonSubTypes.Type(value=Start.class, name="start"),
-@JsonSubTypes.Type(value=End.class, name="end"),
-@JsonSubTypes.Type(value=Task.class, name="task"),
-@JsonSubTypes.Type(value=JoinGateway.class, name="joinGateway"),
-@JsonSubTypes.Type(value=SplitGateway.class, name="splitGateway"),
-})
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({ @JsonSubTypes.Type(value = Start.class, name = "start"),
+		@JsonSubTypes.Type(value = End.class, name = "end"),
+		@JsonSubTypes.Type(value = Task.class, name = "task"),
+		@JsonSubTypes.Type(value = JoinGateway.class, name = "joinGateway"),
+		@JsonSubTypes.Type(value = SplitGateway.class, name = "splitGateway"), })
 public abstract class ObjectBPMN {
 	protected int id;
 	protected int x, y; // position
@@ -28,14 +23,13 @@ public abstract class ObjectBPMN {
 	protected boolean optimised;
 
 	protected ArrayList<Integer> links_partant = new ArrayList<Integer>(); // liens
-																					// partant
+																			// partant
 	protected ArrayList<Integer> links_arrivant = new ArrayList<Integer>(); // liens
-																					// arrivant
+																			// arrivant
 	int max_link_partant, max_link_arrivant; // nombre de liens max dï¿½finis
 												// pour chaque type d'objet
 												// hï¿½ritï¿½
 
-	
 	public ObjectBPMN() {
 		x = 0;
 		y = 0;
@@ -43,17 +37,13 @@ public abstract class ObjectBPMN {
 		colone = 0;
 	}
 
-	
 	public boolean isOptimised() {
 		return optimised;
 	}
 
-
 	public void setOptimised(boolean optimised) {
 		this.optimised = optimised;
 	}
-
-
 
 	public ObjectBPMN(int id, int x, int y, int l, int h, int ligne,
 			int colone, int prio, String label, boolean optimised,
@@ -76,10 +66,6 @@ public abstract class ObjectBPMN {
 		this.max_link_partant = max_link_partant;
 		this.max_link_arrivant = max_link_arrivant;
 	}
-
-
-
-
 
 	@Override
 	public String toString() {
@@ -138,7 +124,7 @@ public abstract class ObjectBPMN {
 		g.drawString(Integer.toString(id), x - 10, y - 1);
 
 		int px1, px2, py1, py2;
-		g.setColor(Color.BLUE);
+		g.setColor(new Color(70, 90, 137));
 		// gestion de l'affichge des liens sortants
 		for (int i = 0; i < links_partant.size(); i++) {
 			ObjectBPMN o = wf.get_objet(links_partant.get(i));
@@ -195,7 +181,7 @@ public abstract class ObjectBPMN {
 	}
 
 	public void setId(int id) {
-		//System.out.println(id);
+		// System.out.println(id);
 		this.id = id;
 	}
 
@@ -294,6 +280,5 @@ public abstract class ObjectBPMN {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	
 
 }

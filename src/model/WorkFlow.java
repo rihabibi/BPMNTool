@@ -11,8 +11,26 @@ public class WorkFlow {
 	private IdGenerator iter = new IdGenerator();
 	int h = 0; // hauteur de la fenetre
 	int l = 0; // largeur de la fenetre
+	int h_min = 0;
+	int l_min = 0;
 	int nb_obj = 0;
 	private int waitx, waity; // zone d'attente
+
+	public int getH_min() {
+		return h_min;
+	}
+
+	public void setH_min(int h_min) {
+		this.h_min = h_min;
+	}
+
+	public int getL_min() {
+		return l_min;
+	}
+
+	public void setL_min(int l_min) {
+		this.l_min = l_min;
+	}
 
 	public void starting() {
 		addNewPool("Pool");
@@ -25,9 +43,37 @@ public class WorkFlow {
 		addNewPool("Pool3");
 		Task t2 = new Task("ttt2");
 		Task t3 = new Task("ttt.");
+		Task tvar;
 		addObject(1, t2);
-		addObject(2, t3);
+		// addObject(2,t3);
+
+		tvar = new Task(
+				"tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1, tvar);
+		tvar = new Task(
+				"tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1, tvar);
+		tvar = new Task(
+				"tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1, tvar);
+		tvar = new Task(
+				"tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1, tvar);
+		tvar = new Task(
+				"tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1, tvar);
+		tvar = new Task(
+				"tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+		addObject(1, tvar);
 		linker(2, 3);
+		linker(3, 4);
+		linker(4, 5);
+		linker(5, 6);
+		linker(6, 7);
+		linker(7, 8);
+		linker(8, 9);
+
+		// linker(2,3);
 		optimise();
 	}
 
@@ -40,13 +86,15 @@ public class WorkFlow {
 	int ecart_H = 30;
 
 	public WorkFlow(ArrayList<Pool> pools, IdGenerator iter, int h, int l,
-			int nb_obj, int waitx, int waity, int ecart_H, int ecart_L,
-			int espace_h, int espace_l) {
+			int h_min, int l_min, int nb_obj, int waitx, int waity,
+			int ecart_H, int ecart_L, int espace_h, int espace_l) {
 		super();
 		Pools = pools;
 		this.iter = iter;
 		this.h = h;
 		this.l = l;
+		this.h_min = h_min;
+		this.l_min = l_min;
 		this.nb_obj = nb_obj;
 		this.waitx = waitx;
 		this.waity = waity;
@@ -77,6 +125,8 @@ public class WorkFlow {
 	public WorkFlow(int li, int hi) {
 		h = hi;
 		l = li;
+		h_min = hi;
+		l_min = li;
 		starting();
 	}
 
@@ -93,7 +143,7 @@ public class WorkFlow {
 	}
 
 	// Permet d'ajouter un objet dans une pool /!\ il faut obligatoirement
-	// passer par cette m�thode
+	// passer par cette mthode
 	public void addObject(int pool, ObjectBPMN o) {
 		o.setId(iter.news_id());
 		Pools.get(pool).AddObject(o);
@@ -192,8 +242,7 @@ public class WorkFlow {
 			}
 			p.delete_obj(id);
 		} else {
-			JOptionPane.showMessageDialog(null,
-					"Supression impossible l'objet n'existe pas");
+			JOptionPane.showMessageDialog(null, "This object doesn't exist.");
 		}
 	}
 
@@ -220,11 +269,10 @@ public class WorkFlow {
 				System.out.println("ok change pool");
 			} else {
 				JOptionPane.showMessageDialog(null,
-						"L'objet demand� n'existe pas.");
+						"This object doesn't exist.");
 			}
 		} else {
-			JOptionPane.showMessageDialog(null,
-					"La pool demand� n'existe pas.");
+			JOptionPane.showMessageDialog(null, "This pool doesn't exist.");
 		}
 	}
 
@@ -241,10 +289,8 @@ public class WorkFlow {
 		} else {
 			// error
 			System.out.println("Problem de linkage");
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"Linkage impossible, l'un des objets n'existe pas ou ne peut est lier � plus d'objet");
+			JOptionPane.showMessageDialog(null,
+					"You can't link one of these objects.");
 		}
 	}
 
@@ -265,6 +311,7 @@ public class WorkFlow {
 			Pools.get(i).affiche(g);
 		}
 		for (int i = 0; i < Pools.size(); i++) {
+
 			ArrayList<ObjectBPMN> Objects = Pools.get(i).getObjects();
 			for (int j = 0; j < Objects.size(); j++) {
 				Objects.get(j).affiche_link(g, this);
@@ -279,6 +326,9 @@ public class WorkFlow {
 		// System.out.println("posty  " + waity);
 
 		System.out.println("waity : " + waity);
+		g.setColor(new Color(255, 255, 255));
+		g.fillRect(waitx, waity + 5, l, 125);
+		g.setColor(Color.BLACK);
 		g.drawRect(waitx, waity + 5, l, 125);
 		g.drawRect(waitx, waity + 5, 20, 125);
 		String label = "Is pending";
@@ -592,7 +642,10 @@ public class WorkFlow {
 		for (int i = 0; i < Col_taille.size(); i++) {
 			l += Col_taille.get(i) + ecart_L;
 		}
-		l += 20;
+		l += 60;
+		if (l < l_min) {
+			l = l_min;
+		}
 		System.out.println("nb col : " + Col_taille.size() + "largeur : " + l);
 		for (int i = 0; i < Pools.size(); i++) {
 			Pools.get(i).setL(l);
@@ -606,6 +659,9 @@ public class WorkFlow {
 			h += haut;
 		}
 		h += 130; // pour la zone d'attente
+		if (h < h_min) {
+			h = h_min;
+		}
 
 		// placement des pools
 		posy = 0;

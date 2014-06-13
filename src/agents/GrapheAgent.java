@@ -30,6 +30,7 @@ public class GrapheAgent extends Agent {
 	protected void setup() {
 		addBehaviour(new GraphBehaviour());
 		addBehaviour(new startBehaviour());
+		addBehaviour(new GetModifyGraph());
 
 	}
 
@@ -92,7 +93,7 @@ public class GrapheAgent extends Agent {
 							}
 						} else {
 							JOptionPane.showMessageDialog(null,
-									"Supression impossible de l'objet initial");
+									"You can't delete the initial object.");
 						}
 
 						break;
@@ -104,7 +105,7 @@ public class GrapheAgent extends Agent {
 							maj = true;
 						} else {
 							JOptionPane.showMessageDialog(null,
-									"Supression impossible du pool initial");
+									"You can't delete the initial pool.");
 						}
 
 						break;
@@ -207,11 +208,23 @@ public class GrapheAgent extends Agent {
 			ACLMessage message = myAgent.receive(MessageTemplate
 					.MatchPerformative(ACLMessage.INFORM));
 			if (message != null) {
-				System.out.println("reception graph");
+				System.out.println("reception graph reçut");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				try {
 					wf = mapper.readValue(message.getContent(), WorkFlow.class);
+					
+					// envois du rÃ©sultat vers un agent d'affichage
+					ObjectMapper mapper2 = new ObjectMapper();
+					ACLMessage message_reply = new ACLMessage(
+							ACLMessage.REQUEST);
+
+					String s = mapper2.writeValueAsString(wf);
+					message_reply.setContent(s);
+					message_reply.addReceiver(new AID("Optimisateur",
+							AID.ISLOCALNAME));
+					myAgent.send(message_reply);
+					
 					System.out.println("workflow modified !");
 				} catch (JsonParseException e) {
 					e.printStackTrace();
