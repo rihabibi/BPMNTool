@@ -1,7 +1,6 @@
 package agents;
 
 import jade.core.AID;
-import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
@@ -15,20 +14,19 @@ import model.WorkFlow;
 import view.View;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ViewAgent extends GuiAgent 
-{
+public class ViewAgent extends GuiAgent {
 	public static int TEXT_SEND = 1;
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private View view;
 	public WorkFlow graph;
 
 	@Override
-	public void setup() 
-	{
+	public void setup() {
 		super.setup();
 		view = new View(this);
 		changes.addPropertyChangeListener(view);
@@ -37,14 +35,11 @@ public class ViewAgent extends GuiAgent
 	}
 
 	@Override
-	protected void onGuiEvent(GuiEvent e) 
-	{
-		if (e.getType() == TEXT_SEND) 
-		{
+	protected void onGuiEvent(GuiEvent e) {
+		if (e.getType() == TEXT_SEND) {
 			String message_content = e.getParameter(0).toString();
 			System.out.println("Receive : " + message_content);
-			if (message_content.contains("\n")) 
-			{
+			if (message_content.contains("\n")) {
 				System.out.println("para");
 			}
 			ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
@@ -54,14 +49,12 @@ public class ViewAgent extends GuiAgent
 		}
 	}
 
-	private class GraphBehaviour extends CyclicBehaviour 
-	{
+	private class GraphBehaviour extends CyclicBehaviour {
 		@Override
-		public void action() 
-		{
-			ACLMessage message = myAgent.receive(MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-			if (message != null) 
-			{
+		public void action() {
+			ACLMessage message = myAgent.receive(MessageTemplate
+					.MatchPerformative(ACLMessage.REQUEST));
+			if (message != null) {
 				System.out.println("reception graph");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -80,15 +73,29 @@ public class ViewAgent extends GuiAgent
 			}
 		}
 	}
-	
-	private class InterpretorBehaviour extends CyclicBehaviour 
-	{
-		public void action() 
-		{
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+
+	public void modifyGraph(WorkFlow wf) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+			String s = mapper.writeValueAsString(wf);
+			message.setContent(s);
+			message.addReceiver(new AID("Graphe", AID.ISLOCALNAME));
+			send(message);
+			System.out.println(message.getContent().toString());
+			System.out.println("send modify graph to GraphAgent");
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private class InterpretorBehaviour extends CyclicBehaviour {
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate
+					.MatchPerformative(ACLMessage.INFORM);
 			ACLMessage m = receive(mt);
-			if (m != null)
-			{
+			if (m != null) {
 				System.out.println("reception interpretor");
 				changes.firePropertyChange("message", null, m.getContent());
 			}

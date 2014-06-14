@@ -131,6 +131,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	private final JTextPane historic = new JTextPane(document);
 	private final JScrollPane conversationContent = new JScrollPane(historic);
 	private final GraphContainer graphContent = new GraphContainer();
+	private final JScrollPane graphScroll = new JScrollPane(graphContent);
 	private final JPanel graph = new JPanel();
 	private final JPanel pane = new JPanel(new GridBagLayout());
 	private final JPanel conversation = new JPanel(new GridBagLayout());
@@ -199,9 +200,9 @@ public class View extends JFrame implements PropertyChangeListener {
 		title = BorderFactory.createTitledBorder(blackline, "Assitant");
 		title.setTitleJustification(TitledBorder.CENTER);
 
-		graph.add(graphContent);
-		graphContent.setBackground(new Color(255, 255, 255));
-		Dimension dimension = new Dimension(800, 500);
+		graph.add(graphScroll);
+		// graphScroll.setBackground(new Color(255, 255, 255));
+		Dimension dimension = new Dimension(800, 450);
 		graphContent.setPreferredSize(dimension);
 		pane.setLayout(new GridBagLayout());
 
@@ -303,7 +304,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		constraints.gridx = 1;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
-		constraints.ipady = 540;
+		constraints.ipady = 528;
 		constraints.insets = new Insets(20, 0, 0, 0);
 		title = BorderFactory.createTitledBorder(blackline, "BPMN Graph");
 		title.setTitleJustification(TitledBorder.CENTER);
@@ -330,6 +331,7 @@ public class View extends JFrame implements PropertyChangeListener {
 					try {
 						wf = export.jsonImport(file);
 						refresh(wf);
+						viewagent.modifyGraph(wf);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -474,11 +476,14 @@ public class View extends JFrame implements PropertyChangeListener {
 
 	}
 
-	public void refresh(WorkFlow graph) {
-		wf = graph;
-		graphContent.refresh(graph);
+	public void refresh(WorkFlow work) {
+		wf = work;
+		Dimension dimension = new Dimension(wf.getL(), wf.getH());
+		graphContent.setPreferredSize(dimension);
+		graphContent.refresh(work);
 		repaint();
 		hasBeenModified = true;
+		System.out.println(dimension);
 	}
 
 	public PropertyChangeSupport getPcs() {
@@ -505,6 +510,10 @@ public class View extends JFrame implements PropertyChangeListener {
 			}
 
 		}
+	}
+
+	public WorkFlow getWorkFlow() {
+		return wf;
 	}
 
 }

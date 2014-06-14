@@ -161,14 +161,15 @@ public class GenerateBehaviour extends CyclicBehaviour {
 	}
 
 	private void GenerateEGateway(String type, String args, Action act) {
-		JoinGateway gate = new JoinGateway();
+		SplitGateway gate = new SplitGateway();
 		act.setType(type);
 		act.addObject(gate);
 
 	}
 
 	private void GeneratePGateway(String type, String args, Action act) {
-		SplitGateway gate = new SplitGateway();
+		
+		JoinGateway gate = new JoinGateway();
 		act.setType(type);
 		act.addObject(gate);
 
