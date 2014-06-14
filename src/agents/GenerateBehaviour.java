@@ -106,22 +106,36 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			case "connect":
 				boolean ok2=true;
 				try {
-				      int n = Integer.parseInt(args.get(0));
-				} catch (NumberFormatException e) {
+					args.get(0);
+				}catch (Exception e) {
 					ok2=false;
 				}
 				try {
-				      int n = Integer.parseInt(args.get(1));
-				} catch (NumberFormatException e) {
+					args.get(1);
+				}catch (Exception e) {
 					ok2=false;
 				}
-				if(ok2){
-					Action connectaction = new Action();// {"action":"connect","object":"","objectClassName":null,"args":"partde,arrivea1,arrive2"}
-					connectaction.addId(args.get(0));
-					connectaction.addId(args.get(1));
-					connectaction.setType("connect");
-					sendAction(connectaction);
-					System.out.println("connexion");
+				if (ok2){
+					try {
+					      int n = Integer.parseInt(args.get(0));
+					} catch (NumberFormatException e) {
+						ok2=false;
+					}
+					try {
+					      int n = Integer.parseInt(args.get(1));
+					} catch (NumberFormatException e) {
+						ok2=false;
+					}
+					if(ok2){
+						Action connectaction = new Action();// {"action":"connect","object":"","objectClassName":null,"args":"partde,arrivea1,arrive2"}
+						connectaction.addId(args.get(0));
+						connectaction.addId(args.get(1));
+						connectaction.setType("connect");
+						sendAction(connectaction);
+						System.out.println("connexion");
+					}else {
+						JOptionPane.showMessageDialog(null,"The argument is incorrect");
+					}
 				}else {
 					JOptionPane.showMessageDialog(null,"The argument is incorrect");
 				}
@@ -130,51 +144,79 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			case "rename":
 				boolean ok3=true;
 				try {
-				      int n = Integer.parseInt(args.get(0));
-				} catch (NumberFormatException e) {
-					JOptionPane.showMessageDialog(null,"The argument is incorrect");
+					args.get(0);
+				}catch (Exception e) {
 					ok3=false;
 				}
-				if (ok3){
-					Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
-					System.out.println(object);
-					if(object.equals("horizontalpool"))
-					{
-						renameaction.setType("rename_pool");
-						renameaction.addId(args.get(0));
-						System.out.println("label pool a rename "+args.get(1));
-						renameaction.addId(args.get(1));
-						sendAction(renameaction);
+				try {
+					args.get(1);
+				}catch (Exception e) {
+					ok3=false;
+				}
+				if (ok3) {
+					try {
+					      int n = Integer.parseInt(args.get(0));
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(null,"The argument is incorrect");
+						ok3=false;
 					}
-					else
-					{
-						renameaction.setType("rename_item");
-						renameaction.addId(args.get(0));
-						renameaction.addId(args.get(1));
-						sendAction(renameaction);
+					if (ok3){
+						Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
+						System.out.println(object);
+						if(object.equals("horizontalpool"))
+						{
+							renameaction.setType("rename_pool");
+							renameaction.addId(args.get(0));
+							System.out.println("label pool a rename "+args.get(1));
+							renameaction.addId(args.get(1));
+							sendAction(renameaction);
+						}
+						else
+						{
+							renameaction.setType("rename_item");
+							renameaction.addId(args.get(0));
+							renameaction.addId(args.get(1));
+							sendAction(renameaction);
+						}
 					}
+				}else {
+					JOptionPane.showMessageDialog(null,"The argument is incorrect");
 				}
 				break;
 				
 			case "put":
 				boolean ok4=true;
 				try {
-				      int n = Integer.parseInt(args.get(0));
-				} catch (NumberFormatException e) {
+					args.get(0);
+				}catch (Exception e) {
 					ok4=false;
 				}
 				try {
-				      int n = Integer.parseInt(args.get(1));
-				} catch (NumberFormatException e) {
+					args.get(1);
+				}catch (Exception e) {
 					ok4=false;
 				}
 				if (ok4){
-					Action putaction = new Action();
-					putaction.setType("put");
-					putaction.addId(args.get(0));
-					putaction.addId(args.get(1));
-					sendAction(putaction);
-				}else {
+					try {
+					      int n = Integer.parseInt(args.get(0));
+					} catch (NumberFormatException e) {
+						ok4=false;
+					}
+					try {
+					      int n = Integer.parseInt(args.get(1));
+					} catch (NumberFormatException e) {
+						ok4=false;
+					}
+					if (ok4){
+						Action putaction = new Action();
+						putaction.setType("put");
+						putaction.addId(args.get(0));
+						putaction.addId(args.get(1));
+						sendAction(putaction);
+					}else {
+						JOptionPane.showMessageDialog(null,"The argument is incorrect");
+					}
+				}else{
 					JOptionPane.showMessageDialog(null,"The argument is incorrect");
 				}
 				break;
