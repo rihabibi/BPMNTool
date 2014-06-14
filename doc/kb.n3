@@ -71,17 +71,14 @@
    
 :Create a :Action ;
    :actionName "create" ;
+   :actionName "add" ;
    :actionName "draw" .
 
 :Connect a :Action ;
    :actionName "connect" ;
    :actionName "link" .
-
-:Save a :Action ;
-   :actionName "save" .
  
 :Put a :Action ; 
-	:actionName "add" ;
 	:actionName "put" ;
 	:actionName "place" ;
 	:actionName "insert" .
@@ -94,5 +91,3 @@
 	:actionName "rename" ;
 	:actionName "name" . 
 	
-:Relink a :Action ; 
-	:actionName "relink" .
