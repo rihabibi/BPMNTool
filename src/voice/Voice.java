@@ -21,7 +21,8 @@ public class Voice {
 	private String credentials = "AIzaSyAuRBaso4NCxJjevkb09mjj6TrDrKhoapM";
 
 	public Voice() 
-	{
+	{	
+		// a commenter si pas réseau UTC
 		System.setProperty("https.proxyHost", "proxyweb.utc.fr");
 		System.setProperty("https.proxyPort", "3128");
 		rec = new JavaSoundRecorder();
@@ -43,7 +44,7 @@ public class Voice {
 				rec.finish();
 			}
 		}.start();
-		return SpeechToText.execute("/Temp/File.wav", credentials);
+		return SpeechToText.execute("File.wav", credentials);
 	}
 
 }
