@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ViewAgent extends GuiAgent {
 	public static int TEXT_SEND = 1;
 	public static int WORKFLOW_SEND = 2;
+	public static int VOICE_SEND = 3;
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private View view;
 	public WorkFlow graph;
@@ -33,6 +34,7 @@ public class ViewAgent extends GuiAgent {
 		changes.addPropertyChangeListener(view);
 		addBehaviour(new GraphBehaviour());
 		addBehaviour(new InterpretorBehaviour());
+		addBehaviour(new VoiceBehaviour());
 	}
 
 	@Override
@@ -63,6 +65,22 @@ public class ViewAgent extends GuiAgent {
 			} catch (JsonProcessingException e2) {
 				e2.printStackTrace();
 			}
+		} else if (e.getType() == VOICE_SEND) {
+			boolean isMicroOn = (boolean) e.getParameter(0);
+			System.out.println("Receive : " + isMicroOn);
+			if (isMicroOn) {
+				ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+				message.addReceiver(new AID("Voix", AID.ISLOCALNAME));
+				message.setContent("ON");
+				send(message);
+			}
+			else {
+				ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+				message.addReceiver(new AID("Voix", AID.ISLOCALNAME));
+				message.setContent("OFF");
+				send(message);
+			}
+
 		}
 	}
 
@@ -95,12 +113,25 @@ public class ViewAgent extends GuiAgent {
 	private class InterpretorBehaviour extends CyclicBehaviour {
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate
-					.MatchPerformative(ACLMessage.INFORM);
+			MessageTemplate mt = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.INFORM), 
+					MessageTemplate.MatchSender(new AID("Interpreteur", AID.ISLOCALNAME)));
 			ACLMessage m = receive(mt);
 			if (m != null) {
 				System.out.println("reception interpretor");
 				changes.firePropertyChange("message", null, m.getContent());
+			}
+		}
+	}
+	
+	private class VoiceBehaviour extends CyclicBehaviour {
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.INFORM), 
+					MessageTemplate.MatchSender(new AID("Voix", AID.ISLOCALNAME)));
+			ACLMessage m = receive(mt);
+			if (m != null) {
+				System.out.println("reception voice");
+				changes.firePropertyChange("voix", null, m.getContent());
 			}
 		}
 	}

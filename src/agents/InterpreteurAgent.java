@@ -42,7 +42,6 @@ public class InterpreteurAgent extends Agent
 				}
 				else 
 				{
-
 					System.out.println("erreur format de message");
 				}
 				ACLMessage message = new ACLMessage(ACLMessage.INFORM);

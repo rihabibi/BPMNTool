@@ -23,13 +23,15 @@ public class lancer
 			AgentController ac4 = cc.createNewAgent("Vue", "agents.ViewAgent",null);
 			AgentController ac5 = cc.createNewAgent("Graphe", "agents.GrapheAgent",null);
 			AgentController ac6 = cc.createNewAgent("Optimisateur", "agents.OptimisateurAgent",null);
+			AgentController ac7 = cc.createNewAgent("Voix", "agents.VoixAgent",null);
 			ac5.start();
 			ac6.start();
-			Thread.sleep(1000);
+			//Thread.sleep(1000);
 			ac1.start();
 			ac2.start();
 			ac3.start();
 			ac4.start();
+			ac7.start();
 			
 		}
 		catch(Exception ex)

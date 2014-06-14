@@ -325,7 +325,7 @@ public class WorkFlow {
 		// zone d'attente
 		// System.out.println("posty  " + waity);
 
-		System.out.println("waity : " + waity);
+		/*System.out.println("waity : " + waity);
 		g.setColor(new Color(255, 255, 255));
 		g.fillRect(waitx, waity + 5, l, 125);
 		g.setColor(Color.BLACK);
@@ -336,8 +336,17 @@ public class WorkFlow {
 		int posy = (waity + 5) + 18;
 		for (int i = 0; i < label.length(); i++) {
 			g.drawString("" + label.charAt(i), 3 + waitx, posy + (i * 11));
-		}
+		}*/
 
+		System.out.println("waity : "+waity);
+		g.drawRect(waitx, waity+5, l, 125);
+		g.drawRect(waitx, waity+5, 20, 125);
+		String label="Is pending";
+		label=label.toUpperCase();
+		int posy = (waity+5)+18;
+		for (int i = 0; i < label.length(); i++) {
+			g.drawString("" + label.charAt(i), 3+waitx, posy + (i * 11));
+		}
 	}
 
 	// optimisation de l'emplacement

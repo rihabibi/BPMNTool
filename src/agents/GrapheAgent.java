@@ -208,13 +208,13 @@ public class GrapheAgent extends Agent {
 			ACLMessage message = myAgent.receive(MessageTemplate
 					.MatchPerformative(ACLMessage.INFORM));
 			if (message != null) {
-				System.out.println("reception graph re�ut");
+				System.out.println("reception graph re�ut");
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 				try {
 					wf = mapper.readValue(message.getContent(), WorkFlow.class);
 					
-					// envois du résultat vers un agent d'affichage
+					// envoit du résultat vers un agent d'affichage
 					ObjectMapper mapper2 = new ObjectMapper();
 					ACLMessage message_reply = new ACLMessage(
 							ACLMessage.REQUEST);

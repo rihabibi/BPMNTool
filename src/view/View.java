@@ -147,6 +147,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	private boolean hasBeenModified = false;
 
 	protected JScrollPane jsp;
+	final Style right;
 
 	public View(ViewAgent a) {
 		viewagent = a;
@@ -186,7 +187,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		center.addAttribute(StyleConstants.Alignment,
 				StyleConstants.ALIGN_CENTER);
 		center.addAttribute(StyleConstants.Foreground, Color.black);
-		final Style right = document.addStyle("right", style);
+		right = document.addStyle("right", style);
 		right.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_RIGHT);
 		right.addAttribute(StyleConstants.Foreground, new Color(0x2F, 0x8F,
 				0x00));
@@ -200,11 +201,15 @@ public class View extends JFrame implements PropertyChangeListener {
 		TitledBorder title;
 		title = BorderFactory.createTitledBorder(blackline, "Assitant");
 		title.setTitleJustification(TitledBorder.CENTER);
-		jsp = new JScrollPane(graphContent);
-		graph.add(jsp);
+
 		graphContent.setBackground(new Color(238, 238, 238));
+		//graphContent.setBorder(BorderFactory.createLineBorder(new Color(238, 238, 238)));
 		Dimension dimension = new Dimension(800, 540);
 		graphContent.setPreferredSize(dimension);
+		jsp = new JScrollPane();
+		jsp.setPreferredSize(new Dimension(800,540)); 
+		jsp.setViewportView(graphContent);
+		graph.add(jsp);
 		pane.setLayout(new GridBagLayout());
 
 		actions.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -454,23 +459,37 @@ public class View extends JFrame implements PropertyChangeListener {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				isMicroOn = !isMicroOn;
 				if (isMicroOn) {
+					micro.setFocusable(false);
+					System.out.println("micro on");
+					micro.setBackground(new Color(130, 255, 130));
+					micro.setFocusable(false);
+					micro.setToolTipText("Micro on");
+					
+					verifLabel.setText("Micro on");
+					verifLabel.setForeground(Color.green);
+					
+					GuiEvent ev = new GuiEvent(this, ViewAgent.VOICE_SEND);
+					ev.addParameter(isMicroOn);
+					viewagent.postGuiEvent(ev);
+					
+				} else {
+					// JToolTip microOn = new JToolTip();
+					// microOn.add(micro);
 					micro.setFocusable(true);
-					isMicroOn = false;
 					System.out.println("micro off");
 					micro.setBackground(new Color(57, 74, 54));
 					micro.setFocusable(false);
 					microTip.setVisible(false);
 					micro.setToolTipText("Micro off");
-				} else {
-					// JToolTip microOn = new JToolTip();
-					// microOn.add(micro);
-					micro.setFocusable(false);
-					isMicroOn = true;
-					System.out.println("micro on");
-					micro.setBackground(new Color(130, 255, 130));
-					micro.setFocusable(false);
-					micro.setToolTipText("Micro on");
+					
+					verifLabel.setText("Micro off");
+					verifLabel.setForeground(Color.gray);
+					
+					GuiEvent ev = new GuiEvent(this, ViewAgent.VOICE_SEND);
+					ev.addParameter(isMicroOn);
+					viewagent.postGuiEvent(ev);
 				}
 
 			}
@@ -484,6 +503,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	public void refresh(WorkFlow g) {
 		wf = g;
 		graphContent.refresh(g);
+		jsp.updateUI();
 		repaint();
 		hasBeenModified = true;
 
@@ -506,12 +526,20 @@ public class View extends JFrame implements PropertyChangeListener {
 				verifLabel.setForeground(Color.green);
 				// actions.updateUI();
 			} else if (arg0.getNewValue().equals("ERROR")) {
-				verifLabel
-						.setText("The command is incorrect. Please try again.");
+				verifLabel.setText("The command is incorrect. Please try again.");
 				verifLabel.setForeground(Color.red);
 				// actions.updateUI();
 			}
-
+		}
+		else if (arg0.getPropertyName().equals("voix")) {
+			String text = (String) arg0.getNewValue();
+			final int pos = document.getLength();
+			try {
+				document.insertString(pos, text + System.getProperty("line.separator"), right);
+				document.setParagraphAttributes(pos, text.length(), right, true);
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
