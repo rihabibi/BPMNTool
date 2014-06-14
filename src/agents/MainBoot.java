@@ -18,5 +18,6 @@ public class MainBoot {
 			ex.printStackTrace();
 			System.out.println("erreur Main boot");
 		}
+		lancer start= new lancer();
 	}
 }

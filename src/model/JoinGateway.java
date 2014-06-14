@@ -18,9 +18,8 @@ public class JoinGateway extends ObjectBPMN {
 		int xt[] = { x + (l / 2), x, x + (l / 2), x + l };
 		int yt[] = { y, y + (h / 2), y + h, y + (h / 2) };
 		// choix de la couleur
-		float[] hsbvals = null;
-		hsbvals = Color.RGBtoHSB(255, 200, 0, hsbvals);
-		g.setColor(Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]));
+
+		g.setColor(new Color(255, 230, 63));
 
 		g.fillPolygon(xt, yt, 4);
 		g.setColor(Color.black);

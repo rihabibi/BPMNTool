@@ -131,7 +131,6 @@ public class View extends JFrame implements PropertyChangeListener {
 	private final JTextPane historic = new JTextPane(document);
 	private final JScrollPane conversationContent = new JScrollPane(historic);
 	private final GraphContainer graphContent = new GraphContainer();
-	private final JScrollPane graphScroll = new JScrollPane(graphContent);
 	private final JPanel graph = new JPanel();
 	private final JPanel pane = new JPanel(new GridBagLayout());
 	private final JPanel conversation = new JPanel(new GridBagLayout());
@@ -146,6 +145,8 @@ public class View extends JFrame implements PropertyChangeListener {
 	private String fileName = null;
 	private WorkFlow wf;
 	private boolean hasBeenModified = false;
+
+	protected JScrollPane jsp;
 
 	public View(ViewAgent a) {
 		viewagent = a;
@@ -199,10 +200,10 @@ public class View extends JFrame implements PropertyChangeListener {
 		TitledBorder title;
 		title = BorderFactory.createTitledBorder(blackline, "Assitant");
 		title.setTitleJustification(TitledBorder.CENTER);
-
-		graph.add(graphScroll);
-		// graphScroll.setBackground(new Color(255, 255, 255));
-		Dimension dimension = new Dimension(800, 450);
+		jsp = new JScrollPane(graphContent);
+		graph.add(jsp);
+		graphContent.setBackground(new Color(238, 238, 238));
+		Dimension dimension = new Dimension(800, 540);
 		graphContent.setPreferredSize(dimension);
 		pane.setLayout(new GridBagLayout());
 
@@ -330,8 +331,12 @@ public class View extends JFrame implements PropertyChangeListener {
 					File file = choose.getSelectedFile();
 					try {
 						wf = export.jsonImport(file);
+						GuiEvent ev = new GuiEvent(this,
+								ViewAgent.WORKFLOW_SEND);
+						ev.addParameter(wf);
+						viewagent.postGuiEvent(ev);
 						refresh(wf);
-						viewagent.modifyGraph(wf);
+						jsp.repaint();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -476,14 +481,12 @@ public class View extends JFrame implements PropertyChangeListener {
 
 	}
 
-	public void refresh(WorkFlow work) {
-		wf = work;
-		Dimension dimension = new Dimension(wf.getL(), wf.getH());
-		graphContent.setPreferredSize(dimension);
-		graphContent.refresh(work);
+	public void refresh(WorkFlow g) {
+		wf = g;
+		graphContent.refresh(g);
 		repaint();
 		hasBeenModified = true;
-		System.out.println(dimension);
+
 	}
 
 	public PropertyChangeSupport getPcs() {
@@ -510,10 +513,6 @@ public class View extends JFrame implements PropertyChangeListener {
 			}
 
 		}
-	}
-
-	public WorkFlow getWorkFlow() {
-		return wf;
 	}
 
 }

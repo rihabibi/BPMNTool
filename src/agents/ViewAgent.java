@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ViewAgent extends GuiAgent {
 	public static int TEXT_SEND = 1;
+	public static int WORKFLOW_SEND = 2;
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private View view;
 	public WorkFlow graph;
@@ -46,6 +47,22 @@ public class ViewAgent extends GuiAgent {
 			message.addReceiver(new AID("Ecrit", AID.ISLOCALNAME));
 			message.setContent(message_content);
 			send(message);
+		} else if (e.getType() == WORKFLOW_SEND) {
+			System.out.println("open !!!");
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				WorkFlow wf = (WorkFlow) e.getParameter(0);
+				System.out.println("workflow cast !!!");
+				ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+				String s = mapper.writeValueAsString(wf);
+				message.setContent(s);
+				message.addReceiver(new AID("Graphe", AID.ISLOCALNAME));
+				send(message);
+				System.out.println(message.getContent().toString());
+				System.out.println("send modify graph to GraphAgent");
+			} catch (JsonProcessingException e2) {
+				e2.printStackTrace();
+			}
 		}
 	}
 
@@ -70,22 +87,8 @@ public class ViewAgent extends GuiAgent {
 				}
 				System.out.println("graph recu");
 				view.refresh(graph);
-			}
-		}
-	}
 
-	public void modifyGraph(WorkFlow wf) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-			String s = mapper.writeValueAsString(wf);
-			message.setContent(s);
-			message.addReceiver(new AID("Graphe", AID.ISLOCALNAME));
-			send(message);
-			System.out.println(message.getContent().toString());
-			System.out.println("send modify graph to GraphAgent");
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			}
 		}
 	}
 
