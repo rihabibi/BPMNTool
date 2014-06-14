@@ -8,8 +8,8 @@ public class Pool {
 	private String label;
 	private int y = 0, h = 50, l = 0;
 	private int id;
-	private int[][] couleurs = { { 245, 219, 171 }, { 212, 245, 171 },
-			{ 206, 242, 245 }, { 245, 206, 206 } };
+	private int[][] couleurs = { { 255, 237, 199 }, { 235, 255, 210 },
+			{ 216, 253, 255 }, { 255, 254, 182 } };
 	private int couleur = 0;
 	private ArrayList<ObjectBPMN> Objects = new ArrayList<ObjectBPMN>();
 

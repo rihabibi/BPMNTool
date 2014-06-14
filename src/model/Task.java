@@ -5,10 +5,10 @@ import java.awt.Graphics;
 
 public class Task extends ObjectBPMN {
 
-	public Task()
-	{
-		
+	public Task() {
+
 	}
+
 	public Task(String lbl) {
 		super();
 		max_link_partant = 1;
@@ -28,9 +28,8 @@ public class Task extends ObjectBPMN {
 	@Override
 	public void affiche(Graphics g) {
 		// choix de la couleur
-		float[] hsbvals = null;
-		hsbvals = Color.RGBtoHSB(50, 200, 200, hsbvals);
-		g.setColor(Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]));
+
+		g.setColor(new Color(178, 218, 218));
 		g.fillRoundRect(x, y, l, h, 10, 10);
 
 		g.setColor(Color.black);

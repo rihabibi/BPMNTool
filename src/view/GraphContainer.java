@@ -12,24 +12,14 @@ public class GraphContainer extends JPanel {
 
 	public void refresh(WorkFlow graph) {
 		work = graph;
+		this.setPreferredSize(new Dimension(work.getL(),work.getH()));
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		if (work != null) {
+			super.paintComponent(g);
 			work.affiche(g);
 		}
-	}
-
-	@Override
-	public Dimension getPreferredSize() {
-		Dimension dimension;
-		if (work != null) {
-			dimension = new Dimension(work.getL(), work.getH());
-		} else {
-			dimension = new Dimension(480, 500);
-		}
-		System.out.println(dimension);
-		return dimension;
 	}
 }
