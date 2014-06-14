@@ -14,6 +14,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -24,6 +25,7 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +40,8 @@ import javax.swing.JTextPane;
 import javax.swing.JToolTip;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -119,7 +123,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	private final Export export = new Export();
 	private final JMenuBar bar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
-	private final JMenu help = new JMenu("Help");
+	private final JMenuItem help = new JMenu("Help");
 	private final JMenuItem newFile = new JMenuItem("New");
 	private final JMenuItem oppenFile = new JMenuItem("Open");
 	private final JMenuItem save = new JMenuItem("Save");
@@ -145,7 +149,7 @@ public class View extends JFrame implements PropertyChangeListener {
 	private String fileName = null;
 	private WorkFlow wf;
 	private boolean hasBeenModified = false;
-
+	private JDialog d2 = new JDialog(this);
 	protected JScrollPane jsp;
 	final Style right;
 
@@ -231,7 +235,7 @@ public class View extends JFrame implements PropertyChangeListener {
 		fileMenu.add(quit);
 		bar.add(fileMenu);
 		bar.add(help);
-		help.setMenuLocation(30, 30);
+		// help.setMenuLocation(30, 30);
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -423,6 +427,66 @@ public class View extends JFrame implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
+		});
+
+		help.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				d2.setTitle("Help");
+				d2.setVisible(true);
+				JTextArea helpText = new JTextArea();
+				helpText.setText("** Orders accepted:\n- create/draw/add + activity/task,"
+						+ "start, end, pool + called/named + the name that you decide\n"
+						+ "- create/draw/add + join/split parallel gateway\n- connect/link"
+						+ " + object + outcoming object's number + and/to/with + incoming object's"
+						+ " number\n- put: It needs to be connect to an other object before\n- put/place/insert"
+						+ " + object + object's number + in/inside pool + pool's number\n- remove/delete"
+						+ " + object + object's number\n- remove/delete + pool + pool's number\n- rename/name"
+						+ " + object + object's number\n- rename/name + pool + pool's number\n\n**"
+						+ " Objects:\nSplit: 1 incoming link, 2 outcoming link\nJoin: 2 incoming link,"
+						+ " 1 outcoming link\nStart: 1 outcoming link\nEnd: 1 incoming link\nTask: 1 "
+						+ "incoming link, outcoming link");
+				helpText.setEditable(false);
+				Dimension dimensionHelp = new Dimension(550, 400);
+				Insets inset = new Insets(50, 50, 50, 50);
+
+				helpText.setBackground(new Color(238, 238, 238));
+				Border borderHelp = BorderFactory.createEmptyBorder();
+				TitledBorder titleHelp;
+				titleHelp = BorderFactory.createTitledBorder(borderHelp,
+						"What you can say to the Assistant");
+				titleHelp.setTitleJustification(TitledBorder.CENTER);
+				Border empty = new EmptyBorder(20, 20, 20, 20);
+				CompoundBorder border = new CompoundBorder(titleHelp, empty);
+				helpText.setBorder(border);
+				helpText.setMargin(inset);
+				d2.add(helpText);
+				d2.setSize(dimensionHelp);
+				d2.setResizable(false);
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+
+			}
+
 		});
 
 		text.addKeyListener(new KeyAdapter() {
