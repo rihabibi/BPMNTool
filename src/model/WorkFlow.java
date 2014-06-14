@@ -310,17 +310,6 @@ public class WorkFlow {
 		for (int i = 0; i < Pools.size(); i++) {
 			Pools.get(i).affiche(g);
 		}
-		for (int i = 0; i < Pools.size(); i++) {
-
-			ArrayList<ObjectBPMN> Objects = Pools.get(i).getObjects();
-			for (int j = 0; j < Objects.size(); j++) {
-				Objects.get(j).affiche_link(g, this);
-			}
-			for (int j = 0; j < Objects.size(); j++) {
-				Objects.get(j).affiche(g);
-			}
-
-		}
 
 		// zone d'attente
 		// System.out.println("posty  " + waity);
@@ -336,6 +325,18 @@ public class WorkFlow {
 		int posy = (waity + 5) + 18;
 		for (int i = 0; i < label.length(); i++) {
 			g.drawString("" + label.charAt(i), 3 + waitx, posy + (i * 11));
+		}
+
+		for (int i = 0; i < Pools.size(); i++) {
+
+			ArrayList<ObjectBPMN> Objects = Pools.get(i).getObjects();
+			for (int j = 0; j < Objects.size(); j++) {
+				Objects.get(j).affiche_link(g, this);
+			}
+			for (int j = 0; j < Objects.size(); j++) {
+				Objects.get(j).affiche(g);
+			}
+
 		}
 
 	}
