@@ -21,7 +21,8 @@
   :sepName "in" ;
   :sepName "inside" ;
   :sepName "into" ;
-  :sepName "under" .
+  :sepName "under" ;
+  :sepName "&" .
   
 :Action a owl:Class .
 :actionName a owl:DatatypeProperty ;
