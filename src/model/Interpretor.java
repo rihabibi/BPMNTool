@@ -167,7 +167,7 @@ public class Interpretor
 		} 
 		else 
 		{
-			lookForObject(words, 0);
+			//lookForObject(words, 0);
 			return null;
 			/**
 			 * L'activité n'est pas trouvée on cherche les éléments objets
@@ -235,8 +235,10 @@ public class Interpretor
 		// Recherche les arguments
 		if (found)
 		{
-			lookForArgs(words, i);
-			return true;
+			if (lookForArgs(words, i))
+				return true;
+			else 
+				return false;
 		}
 		else if ( foundObject && (words.get(i-1).equals("parallel") || words.get(i-1).equals("split") || words.get(i-1).equals("exlcusive") || words.get(i-1).equals("gateway")))
 		{
@@ -254,19 +256,22 @@ public class Interpretor
 	 * @param from
 	 *            : rang à partir duquel prendre les mots
 	 */
-	private void lookForArgs(ArrayList<String> words, int from) 
+	private boolean lookForArgs(ArrayList<String> words, int from) 
 	{
 		int i = from;
+		boolean trouve=false;
 		while (i < words.size()) 
 		{
 			if (!isSeparator(words.get(i)) && !words.get(i).equals("to")
 					&& !words.get(i).equals("and")
-					&& !words.get(i).equals("in")) 
+					&& !words.get(i).equals("in") && !words.get(i).equals("") ) 
 			{
 				currentSentenceModel.addArgsElement(words.get(i));
+				trouve=true;
 			}
 			i++;
 		}
+		return trouve;
 	}
 
 	private void verifyObject(String s)
