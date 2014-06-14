@@ -14,6 +14,15 @@ public class WorkFlow {
 	int h_min = 0;
 	int l_min = 0;
 	int nb_obj = 0;
+	int taille_att;
+	public int getTaille_att() {
+		return taille_att;
+	}
+
+	public void setTaille_att(int taille_att) {
+		this.taille_att = taille_att;
+	}
+
 	private int waitx, waity; // zone d'attente
 
 	public int getH_min() {
@@ -85,9 +94,11 @@ public class WorkFlow {
 
 	int ecart_H = 30;
 
+	
+
 	public WorkFlow(ArrayList<Pool> pools, IdGenerator iter, int h, int l,
-			int h_min, int l_min, int nb_obj, int waitx, int waity,
-			int ecart_H, int ecart_L, int espace_h, int espace_l) {
+			int h_min, int l_min, int nb_obj, int taille_att, int waitx,
+			int waity, int ecart_H, int ecart_L, int espace_h, int espace_l) {
 		super();
 		Pools = pools;
 		this.iter = iter;
@@ -96,6 +107,7 @@ public class WorkFlow {
 		this.h_min = h_min;
 		this.l_min = l_min;
 		this.nb_obj = nb_obj;
+		this.taille_att = taille_att;
 		this.waitx = waitx;
 		this.waity = waity;
 		this.ecart_H = ecart_H;
@@ -316,10 +328,11 @@ public class WorkFlow {
 
 		System.out.println("waity : " + waity);
 		g.setColor(new Color(255, 255, 255));
-		g.fillRect(waitx, waity + 5, l, 125);
+		g.fillRect(waitx, waity + 5, l, taille_att);
 		g.setColor(Color.BLACK);
-		g.drawRect(waitx, waity + 5, l, 125);
-		g.drawRect(waitx, waity + 5, 20, 125);
+		g.drawRect(waitx, waity + 5, l, taille_att);
+		g.drawRect(waitx, waity + 5, 20, taille_att);
+		h+=taille_att-125;
 		String label = "Is pending";
 		label = label.toUpperCase();
 		int posy = (waity + 5) + 18;
@@ -683,6 +696,7 @@ public class WorkFlow {
 		waity = posy;
 		waitx = 0;
 		int possx = 0;
+		taille_att=125;
 		// recherche des objets non plac�s
 		for (int i = 0; i < Pools.size(); i++) {
 			for (int j = 0; j < Pools.get(i).getObjects().size(); j++) {
@@ -690,6 +704,7 @@ public class WorkFlow {
 					Pools.get(i).getObjects().get(j).setX(waitx + 35 + possx);
 					Pools.get(i).getObjects().get(j).setY(waity + 15 + 5);
 					possx += Pools.get(i).getObjects().get(j).getL() + 10;
+					if(Pools.get(i).getObjects().get(j).getH()>taille_att)taille_att=Pools.get(i).getObjects().get(j).getH();
 				}
 			}
 		}
