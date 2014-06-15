@@ -42,25 +42,29 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			else 
 			switch (request) {
 			case "create":
+				String name =args.get(0);
+				if (args.size()>1)
+					for (int i=1; i<args.size(); i++)
+						name=name + " " + args.get(i);
 				Action addaction = new Action();
 				switch (object) {
 				case "startevent":
-					GenerateStartEvent(request, args.get(0), addaction);
+					GenerateStartEvent(request, name, addaction);
 					sendAction(addaction);
 					break;
 
 				case "endevent":
-					GenerateEndEvent(request, args.get(0), addaction);
+					GenerateEndEvent(request, name, addaction);
 					sendAction(addaction);
 					break;
 
 				case "activity":
-					GenerateActivity(request, args.get(0), addaction);
+					GenerateActivity(request,name, addaction);
 					sendAction(addaction);
 					break;
 
 				case "horizontalpool":
-					GeneratePool("pool",args.get(0), addaction);
+					GeneratePool("pool",name, addaction);
 					sendAction(addaction);
 					break;
 
@@ -161,21 +165,25 @@ public class GenerateBehaviour extends CyclicBehaviour {
 						ok3=false;
 					}
 					if (ok3){
+						String rname =args.get(1);
+						if (args.size()>2)
+							for (int i=2; i<args.size(); i++)
+								rname=rname + " " + args.get(i);
 						Action renameaction = new Action();// {"action":"rename","object":"","objectClassName":null,"args":"target,newName"}
 						System.out.println(object);
 						if(object.equals("horizontalpool"))
 						{
 							renameaction.setType("rename_pool");
 							renameaction.addId(args.get(0));
-							System.out.println("label pool a rename "+args.get(1));
-							renameaction.addId(args.get(1));
+							System.out.println("label pool a rename "+rname);
+							renameaction.addId(rname);
 							sendAction(renameaction);
 						}
 						else
 						{
 							renameaction.setType("rename_item");
 							renameaction.addId(args.get(0));
-							renameaction.addId(args.get(1));
+							renameaction.addId(rname);
 							sendAction(renameaction);
 						}
 					}

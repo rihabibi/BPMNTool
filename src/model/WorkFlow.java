@@ -45,7 +45,7 @@ public class WorkFlow {
 		addNewPool("Pool");
 		Start st1 = new Start("Start");
 		addObject(st1);
-		Task t = new Task("ttt");
+		/*Task t = new Task("ttt");
 		addObject(t);
 		linker(1, 2);
 		addNewPool("Pool2");
@@ -80,7 +80,7 @@ public class WorkFlow {
 		linker(5, 6);
 		linker(6, 7);
 		linker(7, 8);
-		linker(8, 9);
+		linker(8, 9);*/
 
 		// linker(2,3);
 		optimise();
