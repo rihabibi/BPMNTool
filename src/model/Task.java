@@ -27,6 +27,7 @@ public class Task extends ObjectBPMN {
 
 	@Override
 	public void affiche(Graphics g) {
+		
 		// choix de la couleur
 
 		g.setColor(new Color(178, 218, 218));
@@ -52,4 +53,19 @@ public class Task extends ObjectBPMN {
 
 		super.affiche(g);
 	}
+	
+	public void setLabel(String label) {
+		this.label = label;
+
+		if (label.length() <= 15) {
+			l = (label.length() * 6) + 10;
+			h = 25;
+		} else {
+			l = 100;
+			h = 25 * ((label.length() / 15) + 1);
+			System.out.println(h);
+		}
+	}
+	
+	
 }
