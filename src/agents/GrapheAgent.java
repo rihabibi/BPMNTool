@@ -127,13 +127,15 @@ public class GrapheAgent extends Agent {
 						break;
 					case "rename_item":
 						// System.out.println("pool a rename : "+act.getId().get(1));
-						wf.get_objet(Integer.parseInt(act.getId().get(0)))
-								.setLabel(act.getId().get(1));
+						ObjectBPMN or=wf.get_objet(Integer.parseInt(act.getId().get(0)));
+						if(or!=null)or.setLabel(act.getId().get(1));
+						else JOptionPane.showMessageDialog(null,"Item not found.");
 						maj = true;
 						break;
 					case "rename_pool":
-						wf.get_pool(Integer.parseInt(act.getId().get(0)))
-								.setLabel(act.getId().get(1));
+						Pool pp=wf.get_pool(Integer.parseInt(act.getId().get(0)));
+						if(pp!=null)pp.setLabel(act.getId().get(1));
+						else JOptionPane.showMessageDialog(null,"Pool not found.");
 						maj = true;
 						break;
 					case "get_label":
