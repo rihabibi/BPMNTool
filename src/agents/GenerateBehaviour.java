@@ -42,10 +42,19 @@ public class GenerateBehaviour extends CyclicBehaviour {
 			else 
 			switch (request) {
 			case "create":
-				String name =args.get(0);
-				if (args.size()>1)
-					for (int i=1; i<args.size(); i++)
-						name=name + " " + args.get(i);
+				String name="";
+				boolean okk=true;
+				try {
+					args.get(0);
+				}catch (Exception e) {
+					okk=false;
+				}
+				if (okk){
+					name =args.get(0);
+					if (args.size()>1)
+						for (int i=1; i<args.size(); i++)
+							name=name + " " + args.get(i);
+				}
 				Action addaction = new Action();
 				switch (object) {
 				case "startevent":
