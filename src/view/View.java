@@ -207,11 +207,12 @@ public class View extends JFrame implements PropertyChangeListener {
 		title.setTitleJustification(TitledBorder.CENTER);
 
 		graphContent.setBackground(new Color(238, 238, 238));
-		//graphContent.setBorder(BorderFactory.createLineBorder(new Color(238, 238, 238)));
+		// graphContent.setBorder(BorderFactory.createLineBorder(new Color(238,
+		// 238, 238)));
 		Dimension dimension = new Dimension(800, 540);
 		graphContent.setPreferredSize(dimension);
 		jsp = new JScrollPane();
-		jsp.setPreferredSize(new Dimension(800,540)); 
+		jsp.setPreferredSize(new Dimension(800, 540));
 		jsp.setViewportView(graphContent);
 		graph.add(jsp);
 		pane.setLayout(new GridBagLayout());
@@ -325,6 +326,31 @@ public class View extends JFrame implements PropertyChangeListener {
 		this.add(pane);
 
 		// listener sur le bouton du menu pour lancer le choix du fichier
+		newFile.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				wf = new WorkFlow();
+				wf.starting();
+
+				choose.setAcceptAllFileFilterUsed(false);
+				choose.resetChoosableFileFilters();
+				choose.addChoosableFileFilter(new FileNameExtensionFilter(
+						"bpmnt file", "bpmnt"));
+				try {
+					GuiEvent ev = new GuiEvent(this, ViewAgent.WORKFLOW_SEND);
+					ev.addParameter(wf);
+					viewagent.postGuiEvent(ev);
+					refresh(wf);
+					historic.setText("");
+					jsp.repaint();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		oppenFile.addActionListener(new ActionListener() {
 
 			@Override
@@ -530,14 +556,14 @@ public class View extends JFrame implements PropertyChangeListener {
 					micro.setBackground(new Color(130, 255, 130));
 					micro.setFocusable(false);
 					micro.setToolTipText("Micro on");
-					
+
 					verifLabel.setText("Micro on");
 					verifLabel.setForeground(Color.green);
-					
+
 					GuiEvent ev = new GuiEvent(this, ViewAgent.VOICE_SEND);
 					ev.addParameter(isMicroOn);
 					viewagent.postGuiEvent(ev);
-					
+
 				} else {
 					// JToolTip microOn = new JToolTip();
 					// microOn.add(micro);
@@ -547,10 +573,10 @@ public class View extends JFrame implements PropertyChangeListener {
 					micro.setFocusable(false);
 					microTip.setVisible(false);
 					micro.setToolTipText("Micro off");
-					
+
 					verifLabel.setText("Micro off");
 					verifLabel.setForeground(Color.gray);
-					
+
 					GuiEvent ev = new GuiEvent(this, ViewAgent.VOICE_SEND);
 					ev.addParameter(isMicroOn);
 					viewagent.postGuiEvent(ev);
@@ -590,16 +616,17 @@ public class View extends JFrame implements PropertyChangeListener {
 				verifLabel.setForeground(Color.green);
 				// actions.updateUI();
 			} else if (arg0.getNewValue().equals("ERROR")) {
-				verifLabel.setText("The command is incorrect. Please try again.");
+				verifLabel
+						.setText("The command is incorrect. Please try again.");
 				verifLabel.setForeground(Color.red);
 				// actions.updateUI();
 			}
-		}
-		else if (arg0.getPropertyName().equals("voix")) {
+		} else if (arg0.getPropertyName().equals("voix")) {
 			String text = (String) arg0.getNewValue();
 			final int pos = document.getLength();
 			try {
-				document.insertString(pos, text + System.getProperty("line.separator"), right);
+				document.insertString(pos,
+						text + System.getProperty("line.separator"), right);
 				document.setParagraphAttributes(pos, text.length(), right, true);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
