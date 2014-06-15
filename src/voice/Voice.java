@@ -23,8 +23,8 @@ public class Voice {
 	public Voice() 
 	{	
 		// a commenter si pas réseau UTC
-		System.setProperty("https.proxyHost", "proxyweb.utc.fr");
-		System.setProperty("https.proxyPort", "3128");
+		//System.setProperty("https.proxyHost", "proxyweb.utc.fr");
+		//System.setProperty("https.proxyPort", "3128");
 		rec = new JavaSoundRecorder();
 	}
 	
