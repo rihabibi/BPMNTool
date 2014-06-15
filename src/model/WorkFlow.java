@@ -225,7 +225,9 @@ public class WorkFlow {
 
 	// retourne une pool selon son numero
 	public Pool get_pool(int id) {
+		if(id<Pools.size())
 		return Pools.get(id);
+		else return null;
 	}
 
 	// retourne une pool selon son label

@@ -14,7 +14,7 @@ import javax.sound.sampled.TargetDataLine;
 public class JavaSoundRecorder {
 
 	// path of the wav file
-	File wavFile = new File("/Temp/File.wav");
+	File wavFile = new File("File.wav");
 
 	// format of audio file
 	AudioFileFormat.Type fileType = AudioFileFormat.Type.WAVE;
