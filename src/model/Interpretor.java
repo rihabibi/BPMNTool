@@ -264,7 +264,9 @@ public class Interpretor
 		{
 			if (!isSeparator(words.get(i)) && !words.get(i).equals("to")
 					&& !words.get(i).equals("and")
-					&& !words.get(i).equals("in") && !words.get(i).equals("") ) 
+					&& !words.get(i).equals("in") 
+					&& !words.get(i).equals("") 
+					&& !words.get(i).equals("&")) 
 			{
 				currentSentenceModel.addArgsElement(words.get(i));
 				trouve=true;

@@ -185,6 +185,7 @@ public class View extends JFrame implements PropertyChangeListener {
 				System.exit(0);
 			}
 		});
+		this.setTitle("BPMNTool");
 
 		Style style = context.getStyle(StyleContext.DEFAULT_STYLE);
 		final Style center = document.addStyle("center", style);

@@ -18,13 +18,13 @@ public class Voice {
 	private boolean on = false;
 	private JavaSoundRecorder rec;
 	// todo: ajouter clé
-	private String credentials = "AIzaSyAuRBaso4NCxJjevkb09mjj6TrDrKhoapM";
+	private String credentials = "AIzaSyCElRZI3d5b2AjPbFG3vNvEGE3kN6fiV6k";
 
 	public Voice() 
 	{	
 		// a commenter si pas réseau UTC
-		//System.setProperty("https.proxyHost", "proxyweb.utc.fr");
-		//System.setProperty("https.proxyPort", "3128");
+		System.setProperty("https.proxyHost", "proxyweb.utc.fr");
+		System.setProperty("https.proxyPort", "3128");
 		rec = new JavaSoundRecorder();
 	}
 	
